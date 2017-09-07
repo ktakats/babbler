@@ -1,0 +1,31 @@
+{% extends 'chat/base.html' %}
+
+{% block title %}Babbler{%endblock title %}
+
+{% block content %}
+<div>
+    <form action="">
+        <input id="id_message" autocomplete="off"/><button id="id_send">Send</button>
+    </form>
+</div>
+<div id="id_chat">
+
+</div>
+{% endblock content %}
+
+{% block script%}
+<script>
+    var socket = new WebSocket('ws://' + window.location.host + '/chat/');
+    socket.onopen = function open() {
+      socket.send("hello");
+    };
+
+    socket.onmessage = function(e) {
+        alert(e.data);
+    }
+
+    if (socket.readyState == WebSocket.OPEN) {
+      socket.onopen();
+    }
+  </script>
+{% endblock script%}
