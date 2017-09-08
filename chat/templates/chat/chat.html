@@ -4,9 +4,8 @@
 
 {% block content %}
 <div>
-    <form action="">
         <input id="id_message" autocomplete="off"/><button id="id_send">Send</button>
-    </form>
+
 </div>
 <div id="id_chat">
 
@@ -17,15 +16,22 @@
 <script>
     var socket = new WebSocket('ws://' + window.location.host + '/chat/');
     socket.onopen = function open() {
-      socket.send("hello");
+      console.log("connected");
     };
 
     socket.onmessage = function(e) {
-        alert(e.data);
+        var messagediv=$("<div>"+e.data+"</div>")
+        $('#id_chat').append(messagediv);
     }
 
     if (socket.readyState == WebSocket.OPEN) {
       socket.onopen();
     }
+
+    $("#id_send").on("click", function(){
+        var m=$("#id_message").val();
+        socket.send(m);
+        $("#id_message").val("");
+    })
   </script>
 {% endblock script%}
