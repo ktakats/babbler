@@ -14,7 +14,6 @@ class SimpleChatTest(FunctionalTest):
 
         #Her message shows up on the screen
         chatbox=self.browser.find_element_by_id("id_chat").text
-        print(chatbox)
         self.assertIn(chatbox, "Hello world!")
 
         self.fail()

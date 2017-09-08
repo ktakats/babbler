@@ -8,20 +8,22 @@
 
 </div>
 <div id="id_chat">
-
+<ul id="messages"></ul>
 </div>
 {% endblock content %}
 
 {% block script%}
 <script>
     var socket = new WebSocket('ws://' + window.location.host + '/chat/');
+    console.log(socket)
     socket.onopen = function open() {
       console.log("connected");
     };
 
     socket.onmessage = function(e) {
-        var messagediv=$("<div>"+e.data+"</div>")
-        $('#id_chat').append(messagediv);
+        var message=$("<div></div>");
+        message.html(e.data);
+        $('#messages').append(message);
     }
 
     if (socket.readyState == WebSocket.OPEN) {
