@@ -49,6 +49,9 @@ CHANNEL_LAYERS = {
             'hosts': [('localhost', 6379)],
         },
         'ROUTING': 'babbler.routing.channel_routing',
+        "TEST_CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
     }
 }
 
@@ -90,6 +93,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'TEST': {
+            'NAME': 'testdb.sqlite3'
+        }
     }
 }
 

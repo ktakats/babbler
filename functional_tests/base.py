@@ -1,8 +1,11 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 import sys
+from channels.test import ChannelLiveServerTestCase
 
-class FunctionalTest(StaticLiveServerTestCase):
+#For testing locally two redis instances are necessary. See https://gist.github.com/ctavan/4482825
+
+class FunctionalTest(ChannelLiveServerTestCase):
 
     @classmethod
     def setUpClass(cls):
