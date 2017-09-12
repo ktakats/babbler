@@ -3,13 +3,17 @@
 {% block title %}Babbler{%endblock title %}
 
 {% block content %}
-<div>
-        <input id="id_message" autocomplete="off"/><button id="id_send">Send</button>
 
-</div>
 <div id="id_chat">
-<ul id="messages"></ul>
+    <ul id="messages"></ul>
 </div>
+
+<div class="form">
+    <form>
+        <input id="id_message" autocomplete="off"/><button id="id_send">Send</button>
+    </form>
+</div>
+
 {% endblock content %}
 
 {% block script%}
@@ -21,7 +25,7 @@
     };
 
     socket.onmessage = function(e) {
-        var message=$("<div></div>");
+        var message=$("<li></li>");
         message.html(e.data);
         $('#messages').append(message);
     }
@@ -30,10 +34,11 @@
       socket.onopen();
     }
 
-    $("#id_send").on("click", function(){
+    $("form").submit(function(){
         var m=$("#id_message").val();
         socket.send(m);
         $("#id_message").val("");
+        return false;
     })
   </script>
 {% endblock script%}
