@@ -1,11 +1,15 @@
 from channels import Group
+from channels.sessions import channel_session
 
-def ws_add(message):
+@channel_session
+def ws_add(message, room):
     message.reply_channel.send({"accept": True})
-    Group('chat').add(message.reply_channel)
+    Group('chat-%s' % (room)).add(message.reply_channel)
+    message.channel_session['room'] = room
 
+@channel_session
 def ws_message(message):
-
-    Group('chat').send({
+    room = message.channel_session['room']
+    Group('chat-%s' %  (room)).send({
         "text": message.content['text'],
     })

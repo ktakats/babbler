@@ -18,7 +18,9 @@
 
 {% block script%}
 <script>
-    var socket = new WebSocket('ws://' + window.location.host + '/chat/');
+    var room=window.location.pathname.slice(6).slice(0,-1);
+    console.log(room);
+    var socket = new WebSocket('ws://' + window.location.host + '/chat/' + room);
     console.log(socket)
     socket.onopen = function open() {
       console.log("connected");

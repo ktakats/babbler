@@ -9,17 +9,17 @@ def check_for_bad_request(self):
 
 class SimpleChatTest(FunctionalTest):
 
-    def test_simple_chat(self):
+    def test_simple_room_chat(self):
 
         #There's a new chat web app! Alice goes to check it out
-        self.browser.get(self.server_url)
+        self.browser.get(self.server_url + '/room/main/')
         check_for_bad_request(self)
         alice_browser=self.browser
 
         #at the same time Bob opens a browser too
         bob_browser = webdriver.Chrome("/usr/lib/chromium-browser/chromedriver")
         self.browser=bob_browser
-        self.browser.get(self.server_url)
+        self.browser.get(self.server_url + '/room/main/')
         check_for_bad_request(self)
 
         #Alice sees an input field and a send button
@@ -37,6 +37,7 @@ class SimpleChatTest(FunctionalTest):
 
         body = self.browser.find_element_by_tag_name("body").text
         self.assertIn("Hello world!", body)
+
         #He decides to answer
         self.browser.find_element_by_id('id_message').send_keys("Hola Alice!")
         self.browser.find_element_by_id('id_send').click()
@@ -45,3 +46,14 @@ class SimpleChatTest(FunctionalTest):
         self.browser=alice_browser
         body = self.browser.find_element_by_tag_name("body").text
         self.assertIn("Hola Alice!", body)
+
+        #But then Alice changes to another room and sends a message there
+        self.browser.get(self.server_url + '/room/other/')
+        self.browser.find_element_by_id('id_message').send_keys("Hola people!\n")
+        time.sleep(0.5)
+
+        #And since Bob is in the first room, he can't see it
+        self.browser=bob_browser
+        body = self.browser.find_element_by_tag_name("body").text
+        self.assertNotIn("Hola people!", body)
+
