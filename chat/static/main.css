@@ -4,19 +4,19 @@ body {
 }
 
 
-form {
+.chatform {
     position: absolute;
     bottom: 2%;
     width:70%;
     margin-left: 15%;
 }
 
-form input {
+.chatform input {
     width: 60%;
     padding: 10px;
 }
 
-form button {
+.chatform button {
     width: 10%;
     padding: 10px;
 }

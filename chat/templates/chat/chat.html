@@ -1,6 +1,6 @@
 {% extends 'chat/base.html' %}
 
-{% block title %}Babbler{%endblock title %}
+{% block title %}{{room.title}}{%endblock title %}
 
 {% block content %}
 
@@ -9,7 +9,7 @@
 </div>
 
 <div class="form">
-    <form>
+    <form class="chatform">
         <input id="id_message" autocomplete="off"/><button id="id_send">Send</button>
     </form>
 </div>
