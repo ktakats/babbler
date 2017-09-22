@@ -29,12 +29,21 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_email').send_keys('alice@bla.com')
         self.browser.find_element_by_id('id_first_name').send_keys('Alice')
         self.browser.find_element_by_id('id_password1').send_keys('blabla')
-        self.browser.find_element_by_id('id_password2').send_keys('blabla\n')
+        self.browser.find_element_by_id('id_password2').send_keys("blabla")
+        self.browser.find_element_by_tag_name('button').click()
+        time.sleep(5)
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Hi, Alice', body)
         self.assertIn('Logout', body)
 
+        #She logs out
+        self.browser.find_element_by_link_text("Logout").click()
+        body = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Sign up', body)
+        self.assertNotIn('Hi Alice', body)
+
         self.fail()
+
 
     def test_simple_room_chat(self):
 

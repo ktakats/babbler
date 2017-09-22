@@ -1,5 +1,8 @@
 from django.test import TestCase
 from chat.models import Room
+from django.contrib.auth import get_user_model
+
+User=get_user_model()
 
 class HomeViewTest(TestCase):
 
@@ -37,6 +40,17 @@ class SignupViewTest(TestCase):
 
     def test_submitting_form_redirects_to_home(self):
         response=self.client.post('/accounts/signup/', data={'email': 'bla@bla.com', 'password1': 'bla', 'password2': 'bla', 'first_name': 'Test'})
+        self.assertRedirects(response, '/')
+
+    def test_password_confirmation_fail_shows_error(self):
+        self.fail()
+
+class LoginLogoutViewTest(TestCase):
+
+    def test_logout(self):
+        user=User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test')
+        self.client.force_login(user)
+        response=self.client.get('/accounts/logout/')
         self.assertRedirects(response, '/')
 
 class ChatRoomViewTest(TestCase):

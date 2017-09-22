@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.core.exceptions import ObjectDoesNotExist
 from chat.forms import NewRoomForm, SignupForm
 from chat.models import Room
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model, login, logout
 
 User=get_user_model()
 
@@ -28,6 +28,10 @@ def signup(request):
             return redirect('/')
     form=SignupForm()
     return render(request, 'chat/signup.html', {'form': form})
+
+def log_out(request):
+    logout(request)
+    return redirect('/')
 
 def chat(request, room_id):
     try:
