@@ -24,3 +24,5 @@ class UserModelTest(TestCase):
     def test_can_create_user(self):
         user=User.objects.create_user(email='bla@bla.com', password='blabla', first_name="Test")
         self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.first(), user)
+

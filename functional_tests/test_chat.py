@@ -28,7 +28,8 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_link_text('Sign up').click()
         self.browser.find_element_by_id('id_email').send_keys('alice@bla.com')
         self.browser.find_element_by_id('id_first_name').send_keys('Alice')
-        self.browser.find_element_by_id('id_password').send_keys('blabla\n')
+        self.browser.find_element_by_id('id_password1').send_keys('blabla')
+        self.browser.find_element_by_id('id_password2').send_keys('blabla\n')
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Hi, Alice', body)
         self.assertIn('Logout', body)

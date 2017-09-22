@@ -21,6 +21,24 @@ class HomeViewTest(TestCase):
         room = Room.objects.first()
         self.assertRedirects(response, '/room/%s/' % room.title)
 
+    def test_view_has_signup(self):
+        response = self.client.get('/')
+        self.assertContains(response, 'Sign up')
+
+class SignupViewTest(TestCase):
+
+    def test_view_uses_signup_template(self):
+        response=self.client.get('/accounts/signup/')
+        self.assertTemplateUsed(response, 'chat/signup.html')
+
+    def test_view_renders_form(self):
+        response = self.client.get('/accounts/signup/')
+        self.assertContains(response, 'id_email')
+
+    def test_submitting_form_redirects_to_home(self):
+        response=self.client.post('/accounts/signup/', data={'email': 'bla@bla.com', 'password1': 'bla', 'password2': 'bla', 'first_name': 'Test'})
+        self.assertRedirects(response, '/')
+
 class ChatRoomViewTest(TestCase):
 
     def test_view_uses_chat_template(self):
