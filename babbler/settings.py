@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'channels',
 ]
 
+AUTH_USER_MODEL='chat.User'
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'asgi_redis.RedisChannelLayer',

@@ -18,12 +18,30 @@ def quit_if_possible(browser):
 
 class SimpleChatTest(FunctionalTest):
 
+    def test_signup_and_login(self):
+        # There's a new chat web app! Alice goes to check it out
+        self.browser.get(self.server_url)
+        # check_for_bad_request(self)
+        alice_browser = self.browser
+
+        #She realizes that she needs to sign up
+        self.browser.find_element_by_link_text('Sign up').click()
+        self.browser.find_element_by_id('id_email').send_keys('alice@bla.com')
+        self.browser.find_element_by_id('id_first_name').send_keys('Alice')
+        self.browser.find_element_by_id('id_password').send_keys('blabla\n')
+        body=self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Hi, Alice', body)
+        self.assertIn('Logout', body)
+
+        self.fail()
+
     def test_simple_room_chat(self):
 
         #There's a new chat web app! Alice goes to check it out
         self.browser.get(self.server_url)
         #check_for_bad_request(self)
         alice_browser=self.browser
+
 
         #She sees that she can create a room
         self.browser.find_element_by_id('id_title').send_keys('main')
