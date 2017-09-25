@@ -32,7 +32,8 @@ class SignupForm(forms.models.ModelForm):
         pw1=cleaned_data['password1']
         pw2=cleaned_data['password2']
         if pw1 and pw2 and pw1 != pw2:
-            raise forms.ValidationError("Passwords don't match")
+            msg="Passwords do not match"
+            self.add_error('password2', msg)
 
     def save(self):
         data=self.cleaned_data

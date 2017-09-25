@@ -29,6 +29,11 @@ class SignupFormTest(TestCase):
         form = SignupForm(data={'email': 'bla@bla.com', 'password1': 'bla', 'password2': 'blabla', 'first_name': 'Test'})
         self.assertFalse(form.is_valid())
 
+    def test_form_has_error_message_if_passwords_donot_match(self):
+        form = SignupForm(data={'email': 'bla@bla.com', 'password1': 'bla', 'password2': 'blabla', 'first_name': 'Test'})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['password2'][0], "Passwords do not match")
+
     def test_submitting_form_saves_user(self):
         form = SignupForm(data={'email': 'bla@bla.com', 'password1': 'bla', 'password2': 'bla', 'first_name': 'Test'})
         self.assertTrue(form.is_valid())

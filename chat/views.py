@@ -26,7 +26,8 @@ def signup(request):
             user=form.save()
             login(request, user)
             return redirect('/')
-    form=SignupForm()
+    else:
+        form=SignupForm()
     return render(request, 'chat/signup.html', {'form': form})
 
 def log_out(request):

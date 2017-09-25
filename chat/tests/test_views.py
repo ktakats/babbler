@@ -43,7 +43,8 @@ class SignupViewTest(TestCase):
         self.assertRedirects(response, '/')
 
     def test_password_confirmation_fail_shows_error(self):
-        self.fail()
+        response = self.client.post('/accounts/signup/', data={'email': 'bla@bla.com', 'password1': 'bla', 'password2': 'blabla','first_name': 'Test'})
+        self.assertContains(response, "Passwords do not match")
 
 class LoginLogoutViewTest(TestCase):
 
