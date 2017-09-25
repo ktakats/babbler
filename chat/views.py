@@ -3,21 +3,34 @@ from __future__ import unicode_literals
 
 from django.shortcuts import redirect, render
 from django.core.exceptions import ObjectDoesNotExist
-from chat.forms import NewRoomForm, SignupForm
+from chat.forms import NewRoomForm, SignupForm, LoginForm
 from chat.models import Room
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import get_user_model, login, logout, authenticate
 
 User=get_user_model()
 
 # Create your views here.
 def home(request):
-    if request.method=='POST':
-        form=NewRoomForm(request.POST)
-        if form.is_valid():
-            room=form.save()
-            return redirect(room.get_absolute_url())
-    form=NewRoomForm()
-    return render(request, 'chat/home.html', {'form': form})
+    if not request.user.is_authenticated:
+        if request.method=='POST':
+            form=LoginForm(request.POST)
+            if form.is_valid():
+                email=form.cleaned_data['email']
+                password=form.cleaned_data['password']
+                user=authenticate(email=email, password=password)
+                if user:
+                    login(request, user)
+                    return redirect('/')
+        form=LoginForm()
+        return render(request, 'chat/home.html', {'form': form})
+    else:
+        if request.method=='POST':
+            form=NewRoomForm(request.POST)
+            if form.is_valid():
+                room=form.save()
+                return redirect(room.get_absolute_url())
+        form=NewRoomForm()
+        return render(request, 'chat/home.html', {'form': form})
 
 def signup(request):
     if request.method=='POST':

@@ -31,7 +31,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_password1').send_keys('blabla')
         self.browser.find_element_by_id('id_password2').send_keys("blabla")
         self.browser.find_element_by_tag_name('button').click()
-        time.sleep(5)
+
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Hi, Alice', body)
         self.assertIn('Logout', body)
@@ -42,7 +42,17 @@ class SimpleChatTest(FunctionalTest):
         self.assertIn('Sign up', body)
         self.assertNotIn('Hi Alice', body)
 
-        self.fail()
+        #At her next visit, she can simply log in with the form on the home page
+        self.browser.get(self.server_url)
+        self.browser.find_element_by_id('id_email').send_keys('alice@bla.com')
+        self.browser.find_element_by_id('id_password').send_keys('blabla')
+        self.browser.find_element_by_tag_name('button').click()
+        time.sleep(5)
+
+        #Now she's logged in and create rooms
+        body=self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Hi, Alice', body)
+        self.assertIn('Create', body)
 
 
     def test_simple_room_chat(self):

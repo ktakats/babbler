@@ -1,8 +1,8 @@
 from django import forms
 from .models import Room
-from django.contrib import auth
+from django.contrib.auth import get_user_model, authenticate
 
-User=auth.get_user_model()
+User=get_user_model()
 
 class NewRoomForm(forms.models.ModelForm):
 
@@ -41,4 +41,21 @@ class SignupForm(forms.models.ModelForm):
         user.set_password(data["password1"])
         user.save()
         return user
+
+class LoginForm(forms.models.ModelForm):
+
+    class Meta:
+        model=User
+        fields=('email', 'password')
+        widgets={
+            'password': forms.PasswordInput()
+        }
+
+    def clean(self):
+        email=self.cleaned_data.get('email')
+        password=self.cleaned_data.get('password')
+        user=authenticate(email=email, password=password)
+        if not user or not user.is_active:
+            msg="Login is invalid. Please try again"
+            self.add_error('email', msg)
 

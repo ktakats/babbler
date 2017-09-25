@@ -1,5 +1,5 @@
 from django.test import TestCase
-from chat.forms import NewRoomForm, SignupForm
+from chat.forms import NewRoomForm, SignupForm, LoginForm
 from chat.models import Room
 from django.contrib import auth
 
@@ -40,3 +40,21 @@ class SignupFormTest(TestCase):
         form.save()
         user=User.objects.first()
         self.assertEqual(user.email, 'bla@bla.com')
+
+class LoginFormTest(TestCase):
+
+    def test_form_has_placeholders(self):
+        form=LoginForm()
+        self.assertIn('Email', form.as_p())
+        self.assertIn('Password', form.as_p())
+
+    def test_form_validation(self):
+        user=User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test')
+        form=LoginForm(data={'email': 'bla@bla.com', 'password': 'bla'})
+        self.assertTrue(form.is_valid())
+
+    def test_form_error_for_wrong_password(self):
+        user = User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test')
+        form = LoginForm(data={'email': 'bla@bla.com', 'password': 'blabla'})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['email'][0], "Login is invalid. Please try again")

@@ -6,6 +6,10 @@
 <form method="POST" action="" id="id_new_room_form">
 {% csrf_token%}
 {{form.as_p}}
+    {% if user.is_authenticated %}
 <button type="submit" id="id_create_room">Create</button>
+    {% else %}
+    <button type="submit" id="id_login">Log in</button>
+    {% endif %}
 </form>
 {% endblock %}
