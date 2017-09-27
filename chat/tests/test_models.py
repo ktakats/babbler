@@ -1,5 +1,5 @@
 from django.test import TestCase
-from chat.models import Room
+from chat.models import Room, Message
 from django.contrib import auth
 
 User=auth.get_user_model()
@@ -25,4 +25,12 @@ class UserModelTest(TestCase):
         user=User.objects.create_user(email='bla@bla.com', password='blabla', first_name="Test")
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.first(), user)
+
+
+class MessageModelTest(TestCase):
+
+    def test_can_create_message(self):
+        user=User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test')
+        msg=Message.objects.create(text="First message", author=user)
+        self.assertEqual(Message.objects.count(), 1)
 

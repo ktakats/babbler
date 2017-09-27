@@ -1,5 +1,5 @@
 from django.test import TestCase
-from chat.forms import NewRoomForm, SignupForm, LoginForm
+from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm
 from chat.models import Room
 from django.contrib import auth
 
@@ -14,6 +14,12 @@ class NewRoomFormTest(TestCase):
     def test_form_validation(self):
         form=NewRoomForm(data={'title': 'main'})
         self.assertTrue(form.is_valid())
+
+class MsgFormTest(TestCase):
+
+    def test_default_test(self):
+        form=MsgForm()
+        self.assertIn('id_text', form.as_p())
 
 class SignupFormTest(TestCase):
 

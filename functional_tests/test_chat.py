@@ -79,7 +79,7 @@ class SimpleChatTest(FunctionalTest):
         #Alice sees an input field and a send button
         #she writes a message and sends it
         self.browser=alice_browser
-        self.browser.find_element_by_id('id_message').send_keys("Hello world!")
+        self.browser.find_element_by_id('id_text').send_keys("Hello world!")
         self.browser.find_element_by_id('id_send').click()
         #time.sleep(0.5)
         #Her message shows up on the screen
@@ -93,7 +93,7 @@ class SimpleChatTest(FunctionalTest):
         self.assertIn("Hello world!", body)
 
         #He decides to answer
-        self.browser.find_element_by_id('id_message').send_keys("Hola Alice!")
+        self.browser.find_element_by_id('id_text').send_keys("Hola Alice!")
         self.browser.find_element_by_id('id_send').click()
         time.sleep(0.5)
         #Which Alice can read
@@ -106,7 +106,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_title').send_keys('other')
         self.browser.find_element_by_id('id_create_room').click()
         check_for_bad_request(self)
-        self.browser.find_element_by_id('id_message').send_keys("Hola people!")
+        self.browser.find_element_by_id('id_text').send_keys("Hola people!")
         self.browser.find_element_by_id('id_send').click()
         time.sleep(5)
 
@@ -128,9 +128,9 @@ class SimpleChatTest(FunctionalTest):
         #She creates a room and writes some messages to bob
         self.browser.find_element_by_id('id_title').send_keys('main')
         self.browser.find_element_by_id('id_create_room').click()
-        self.browser.find_element_by_id('id_message').send_keys("Hi Bob!")
+        self.browser.find_element_by_id('id_text').send_keys("Hola, Bob!")
         self.browser.find_element_by_id('id_send').click()
-        self.browser.find_element_by_id('id_message').send_keys("How are you?")
+        self.browser.find_element_by_id('id_text').send_keys("How are you?")
         self.browser.find_element_by_id('id_send').click()
 
         #Then she leaves
@@ -138,9 +138,9 @@ class SimpleChatTest(FunctionalTest):
 
         #Bob logs in and goes to the same room
         self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
-        self.browser.get('/room/main/')
+        self.browser.get(self.server_url + '/room/main/')
 
         #He can see Alice's earlier message
         body=self.browser.find_element_by_tag_name('body').text
-        self.assertIn('Hi, Bob!', body)
+        self.assertIn('Hola, Bob!', body)
         self.assertIn("How are you?", body)

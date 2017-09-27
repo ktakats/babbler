@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import redirect, render
 from django.core.exceptions import ObjectDoesNotExist
-from chat.forms import NewRoomForm, SignupForm, LoginForm
+from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm
 from chat.models import Room
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -54,4 +54,5 @@ def chat(request, room_id):
         room=Room.objects.get(title=room_id)
     except ObjectDoesNotExist:
         return redirect('/')
-    return render(request, 'chat/chat.html', {'room': room})
+    form=MsgForm()
+    return render(request, 'chat/chat.html', {'room': room, 'form': form})

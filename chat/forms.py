@@ -1,5 +1,5 @@
 from django import forms
-from .models import Room
+from .models import Room, Message
 from django.contrib.auth import get_user_model, authenticate
 
 User=get_user_model()
@@ -18,6 +18,13 @@ class NewRoomForm(forms.models.ModelForm):
         data=self.cleaned_data
         room=Room.objects.create(title=data['title'])
         return room
+
+class MsgForm(forms.models.ModelForm):
+
+    class Meta:
+        model=Message
+        fields=['text']
+        labels={'text': ''}
 
 class SignupForm(forms.models.ModelForm):
     password1=forms.CharField(label='Password', widget=forms.PasswordInput)

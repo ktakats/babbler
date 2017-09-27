@@ -10,7 +10,8 @@
 
 <div class="form">
     <form class="chatform">
-        <input id="id_message" autocomplete="off"/><button id="id_send">Send</button>
+        {{form.as_p}}
+        <button id="id_send">Send</button>
     </form>
 </div>
 
@@ -37,9 +38,9 @@
     }
 
     $("form").submit(function(){
-        var m=$("#id_message").val();
+        var m=$("#id_text").val();
         socket.send(m);
-        $("#id_message").val("");
+        $("#id_text").val("");
         return false;
     })
   </script>

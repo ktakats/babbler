@@ -50,8 +50,24 @@ class HomeViewTest(TestCase):
         room = Room.objects.first()
         self.assertRedirects(response, '/room/%s/' % room.title)
 
+class ChatRoomViewTest(TestCase):
 
+    def test_view_uses_chat_template(self):
+        create_and_log_in_user(self)
+        room=Room.objects.create(title='main')
+        response = self.client.get('/room/main/')
+        self.assertTemplateUsed(response, 'chat/chat.html')
 
+    def test_view_requires_login(self):
+        room=Room.objects.create(title='main')
+        response = self.client.get('/room/main/')
+        self.assertRedirects(response, '/?next=/room/main/')
+
+    def test_view_renders_message_form(self):
+        create_and_log_in_user(self)
+        room = Room.objects.create(title='main')
+        response = self.client.get('/room/main/')
+        self.assertContains(response, 'id_text')
 
 class SignupViewTest(TestCase):
 
@@ -79,15 +95,3 @@ class LogoutViewTest(TestCase):
         response=self.client.get('/accounts/logout/')
         self.assertRedirects(response, '/')
 
-class ChatRoomViewTest(TestCase):
-
-    def test_view_uses_chat_template(self):
-        create_and_log_in_user(self)
-        room=Room.objects.create(title='main')
-        response = self.client.get('/room/main/')
-        self.assertTemplateUsed(response, 'chat/chat.html')
-
-    def test_view_requires_login(self):
-        room=Room.objects.create(title='main')
-        response = self.client.get('/room/main/')
-        self.assertRedirects(response, '/?next=/room/main/')
