@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from chat.forms import NewRoomForm, SignupForm, LoginForm
 from chat.models import Room
 from django.contrib.auth import get_user_model, login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 
 User=get_user_model()
 
@@ -47,6 +48,7 @@ def log_out(request):
     logout(request)
     return redirect('/')
 
+@login_required(login_url='/')
 def chat(request, room_id):
     try:
         room=Room.objects.get(title=room_id)

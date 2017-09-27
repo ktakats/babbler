@@ -47,7 +47,6 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_email').send_keys('alice@bla.com')
         self.browser.find_element_by_id('id_password').send_keys('blabla')
         self.browser.find_element_by_tag_name('button').click()
-        time.sleep(5)
 
         #Now she's logged in and create rooms
         body=self.browser.find_element_by_tag_name('body').text
@@ -58,24 +57,24 @@ class SimpleChatTest(FunctionalTest):
     def test_simple_room_chat(self):
 
         #There's a new chat web app! Alice goes to check it out
-        self.browser.get(self.server_url)
-        #check_for_bad_request(self)
+        self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
         alice_browser=self.browser
-
 
         #She sees that she can create a room
         self.browser.find_element_by_id('id_title').send_keys('main')
+        time.sleep(5)
         self.browser.find_element_by_id('id_create_room').click()
         #check_for_bad_request(self)
-        #time.sleep(0.5)
+        time.sleep(5)
 
         #It creates the room and and opens it
         title=self.browser.find_element_by_tag_name('title').text
         self.assertEqual(title, 'main')
 
         #at the same time Bob opens a browser too
-        bob_browser = webdriver.Firefox()
-        self.browser=bob_browser
+        self.browser=webdriver.Firefox()
+        self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
+        bob_browser=self.browser
         #he goes to the new room
         self.browser.get(self.server_url + '/room/main/')
         #check_for_bad_request(self)
