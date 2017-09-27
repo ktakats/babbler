@@ -77,6 +77,13 @@ class ChatRoomViewTest(TestCase):
         msg=Message.objects.first()
         self.assertEqual(msg.text, 'test')
 
+    def test_view_shows_previously_sent_messages(self):
+        user = create_and_log_in_user(self)
+        room = Room.objects.create(title='main')
+        msg=Message.objects.create(text='test message', author=user, room=room)
+        response=self.client.get('/room/main/')
+        self.assertContains(response, 'test message')
+
 class SignupViewTest(TestCase):
 
     def test_view_uses_signup_template(self):

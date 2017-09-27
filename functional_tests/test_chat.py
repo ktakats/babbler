@@ -139,6 +139,7 @@ class SimpleChatTest(FunctionalTest):
         #Bob logs in and goes to the same room
         self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
         self.browser.get(self.server_url + '/room/main/')
+        time.sleep(5)
 
         #He can see Alice's earlier message
         body=self.browser.find_element_by_tag_name('body').text

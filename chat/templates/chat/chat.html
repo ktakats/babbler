@@ -6,18 +6,22 @@
 
 <div id="id_chat">
     <ul id="messages"></ul>
+    {% for msg in messages %}
+    <li>{{msg.text}}</li>
+    {% endfor %}
 </div>
 
 <div class="form">
     <form class="chatform">
         {{form.as_p}}
-        <button id="id_send">Send</button>
+        <button id="id_send" type="submit">Send</button>
     </form>
 </div>
 
 {% endblock content %}
 
 {% block script%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
 <script>
     var room=window.location.pathname.slice(6).slice(0,-1);
     console.log(room);
@@ -40,6 +44,10 @@
     $("form").submit(function(){
         var m=$("#id_text").val();
         socket.send(m);
+        var csrftoken=Cookies.get('csrftoken');
+        $.post(window.location.pathname, {'text':m, 'csrfmiddlewaretoken': csrftoken}, function(result){
+        });
+
         $("#id_text").val("");
         return false;
     })

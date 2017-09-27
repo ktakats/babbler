@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import redirect, render
 from django.core.exceptions import ObjectDoesNotExist
 from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm
-from chat.models import Room
+from chat.models import Message, Room
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 
@@ -58,6 +58,7 @@ def chat(request, room_id):
         form=MsgForm(request.POST)
         if form.is_valid():
             user=request.user
-            form.save(author=user, room=room)
+            msg=form.save(author=user, room=room)
     form=MsgForm()
-    return render(request, 'chat/chat.html', {'room': room, 'form': form})
+    messages=Message.objects.filter(room=room)
+    return render(request, 'chat/chat.html', {'room': room, 'form': form, 'messages': messages})
