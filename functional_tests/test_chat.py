@@ -62,10 +62,7 @@ class SimpleChatTest(FunctionalTest):
 
         #She sees that she can create a room
         self.browser.find_element_by_id('id_title').send_keys('main')
-        time.sleep(5)
         self.browser.find_element_by_id('id_create_room').click()
-        #check_for_bad_request(self)
-        time.sleep(5)
 
         #It creates the room and and opens it
         title=self.browser.find_element_by_tag_name('title').text
@@ -121,3 +118,29 @@ class SimpleChatTest(FunctionalTest):
         #cleanup
         self.addCleanup(lambda: quit_if_possible(alice_browser))
         self.addCleanup(lambda: quit_if_possible(bob_browser))
+
+    def test_chat_messages_are_saved(self):
+
+        #Alice goes to the chat app
+        self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
+        alice_browser = self.browser
+
+        #She creates a room and writes some messages to bob
+        self.browser.find_element_by_id('id_title').send_keys('main')
+        self.browser.find_element_by_id('id_create_room').click()
+        self.browser.find_element_by_id('id_message').send_keys("Hi Bob!")
+        self.browser.find_element_by_id('id_send').click()
+        self.browser.find_element_by_id('id_message').send_keys("How are you?")
+        self.browser.find_element_by_id('id_send').click()
+
+        #Then she leaves
+        self.browser.find_element_by_link_text('Logout').click()
+
+        #Bob logs in and goes to the same room
+        self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
+        self.browser.get('/room/main/')
+
+        #He can see Alice's earlier message
+        body=self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Hi, Bob!', body)
+        self.assertIn("How are you?", body)
