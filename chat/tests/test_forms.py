@@ -21,6 +21,11 @@ class MsgFormTest(TestCase):
         form=MsgForm()
         self.assertIn('id_text', form.as_p())
 
+    def test_form_validation(self):
+        user=User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test_user')
+        form=MsgForm(data={'text': 'Test', 'author': user})
+        self.assertTrue(form.is_valid())
+
 class SignupFormTest(TestCase):
 
     def test_form_has_placeholders(self):

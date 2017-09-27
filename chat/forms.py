@@ -26,6 +26,11 @@ class MsgForm(forms.models.ModelForm):
         fields=['text']
         labels={'text': ''}
 
+    def save(self, author, room):
+        data=self.cleaned_data
+        msg=Message.objects.create(text=data['text'], author=author, room=room)
+        return msg
+
 class SignupForm(forms.models.ModelForm):
     password1=forms.CharField(label='Password', widget=forms.PasswordInput)
     password2=forms.CharField(label='Confirm password', widget=forms.PasswordInput)

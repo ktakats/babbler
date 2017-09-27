@@ -1,5 +1,5 @@
 from django.test import TestCase
-from chat.models import Room
+from chat.models import Room, Message
 from django.contrib.auth import get_user_model
 
 User=get_user_model()
@@ -7,6 +7,7 @@ User=get_user_model()
 def create_and_log_in_user(self, email='bla@bla.com', password='bla', first_name='Test'):
     user=User.objects.create_user(email=email, password=password, first_name=first_name)
     self.client.force_login(user)
+    return user
 
 
 class HomeViewTest(TestCase):
@@ -68,6 +69,13 @@ class ChatRoomViewTest(TestCase):
         room = Room.objects.create(title='main')
         response = self.client.get('/room/main/')
         self.assertContains(response, 'id_text')
+
+    def test_submitting_form_creates_new_message(self):
+        user=create_and_log_in_user(self)
+        room = Room.objects.create(title='main')
+        self.client.post('/room/main/', data={'text': 'test', 'author': user})
+        msg=Message.objects.first()
+        self.assertEqual(msg.text, 'test')
 
 class SignupViewTest(TestCase):
 

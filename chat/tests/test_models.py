@@ -31,6 +31,7 @@ class MessageModelTest(TestCase):
 
     def test_can_create_message(self):
         user=User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test')
-        msg=Message.objects.create(text="First message", author=user)
+        room=Room.objects.create(title='main')
+        msg=Message.objects.create(text="First message", author=user, room=room)
         self.assertEqual(Message.objects.count(), 1)
 

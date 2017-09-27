@@ -54,5 +54,10 @@ def chat(request, room_id):
         room=Room.objects.get(title=room_id)
     except ObjectDoesNotExist:
         return redirect('/')
+    if request.method=='POST':
+        form=MsgForm(request.POST)
+        if form.is_valid():
+            user=request.user
+            form.save(author=user, room=room)
     form=MsgForm()
     return render(request, 'chat/chat.html', {'room': room, 'form': form})
