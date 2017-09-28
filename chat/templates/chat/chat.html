@@ -4,11 +4,34 @@
 
 {% block content %}
 
-<div id="id_chat">
-    <ul id="messages"></ul>
+<div class="col-sm-6 col-sm-offset-3  frame">
+    <ul id="messages">
     {% for msg in messages %}
-    <li>{{msg.text}}</li>
+
+            {% if msg.author == user%}
+            <li style="width:100%">
+                <div class="msj macro">
+                   <!-- <div class="avatar"><img class="img-circle" style="width:100%;" src="'+ me.avatar +'" /></div>-->
+                        <div class="text text-l">
+                                <p>{{msg.text}}</p>
+                               <p><small>{{msg.pub_date}}</small></p>
+                        </div>
+                </div>
+            </li>
+            {% else %}
+            <li style="width:100%">
+                <div class="msj-rta macro">
+                   <!-- <div class="avatar"><img class="img-circle" style="width:100%;" src="'+ me.avatar +'" /></div>-->
+                        <div class="text text-r">
+                                <p>{{msg.text}}</p>
+                                <p><small>{{msg.pub_date}}</small></p>
+                        </div>
+                </div>
+            </li>
+            {% endif %}
+
     {% endfor %}
+    </ul>
 </div>
 
 <div class="form">
@@ -24,16 +47,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
 <script>
     var room=window.location.pathname.slice(6).slice(0,-1);
-    console.log(room);
     var socket = new WebSocket('ws://' + window.location.host + '/chat/' + room);
-    console.log(socket)
+    var owner=false;
+
     socket.onopen = function open() {
       console.log("connected");
     };
 
     socket.onmessage = function(e) {
-        var message=$("<li></li>");
-        message.html(e.data);
+        var date=new Date();
+        if(owner){
+            var message=$("<li style='width:100%'><div class='msj macro'><div class='text text-l'><p>" + e.data +"</p> <p><small>"+ date +"</small></p></div></div></li>");
+            owner=false;
+            }
+         else{
+            var message=$("<li style='width:100%'><div class='msj-rta macro'><div class='text text-r'><p>" + e.data +"</p> <p><small>"+ date +"</small></p></div></div></li>");
+
+         }
         $('#messages').append(message);
     }
 
@@ -43,9 +73,11 @@
 
     $("form").submit(function(){
         var m=$("#id_text").val();
+        owner=true;
         socket.send(m);
         var csrftoken=Cookies.get('csrftoken');
         $.post(window.location.pathname, {'text':m, 'csrfmiddlewaretoken': csrftoken}, function(result){
+
         });
 
         $("#id_text").val("");

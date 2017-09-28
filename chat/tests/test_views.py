@@ -84,6 +84,14 @@ class ChatRoomViewTest(TestCase):
         response=self.client.get('/room/main/')
         self.assertContains(response, 'test message')
 
+    def test_messages_show_author_and_time(self):
+        user = create_and_log_in_user(self)
+        room = Room.objects.create(title='main')
+        msg = Message.objects.create(text='test message', author=user, room=room)
+        response = self.client.get('/room/main/')
+        self.assertContains(response, user.first_name)
+        self.assertContains(response, msg.pub_date)
+
 class SignupViewTest(TestCase):
 
     def test_view_uses_signup_template(self):

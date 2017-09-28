@@ -60,5 +60,5 @@ def chat(request, room_id):
             user=request.user
             msg=form.save(author=user, room=room)
     form=MsgForm()
-    messages=Message.objects.filter(room=room)
+    messages=Message.objects.filter(room=room).order_by('pub_date')
     return render(request, 'chat/chat.html', {'room': room, 'form': form, 'messages': messages})
