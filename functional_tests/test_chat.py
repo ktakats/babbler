@@ -133,6 +133,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_send').click()
         self.browser.find_element_by_id('id_text').send_keys("How are you?")
         self.browser.find_element_by_id('id_send').click()
+        time.sleep(0.5)
 
         #Then she leaves
         self.browser.find_element_by_link_text('Logout').click()

@@ -58,12 +58,14 @@
 
     socket.onmessage = function(e) {
         var date=new Date();
+        var data=JSON.parse(e.data)
+        console.log(data["msg"])
         if(owner){
-            var message=$("<li style='width:100%'><div class='msj macro'><div class='text text-l'><p>" + e.data +"</p> <p><small>"+ date +"</small></p></div></div></li>");
+            var message=$("<li style='width:100%'><div class='msj macro'><div class='avatar'>              <p><small>" + data['author'] +"</small></p></div><div class='text text-l'><p>" + data['msg'] +"</p> <p><small>"+ date +"</small></p></div></div></li>");
             owner=false;
             }
          else{
-            var message=$("<li style='width:100%'><div class='msj-rta macro'><div class='text text-r'><p>" + e.data +"</p> <p><small>"+ date +"</small></p></div></div></li>");
+            var message=$("<li style='width:100%'><div class='msj-rta macro'><div class='text text-r'><p>" + data['msg'] +"</p> <p><small>"+ date +"</small></p></div><div class='avatar'><p><small>" + data['author'] +"</small></p></div></div></li>");
 
          }
         $('#messages').append(message);
