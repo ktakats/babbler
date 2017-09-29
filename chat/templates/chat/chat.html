@@ -11,21 +11,23 @@
             {% if msg.author == user%}
             <li style="width:100%">
                 <div class="msj macro">
-                   <!-- <div class="avatar"><img class="img-circle" style="width:100%;" src="'+ me.avatar +'" /></div>-->
+                   <div class="avatar"><!--<img class="img-circle" style="width:100%;" src="'+ me.avatar +'" />--><p><small>{{msg.author.first_name}}</small></p></div>
                         <div class="text text-l">
                                 <p>{{msg.text}}</p>
                                <p><small>{{msg.pub_date}}</small></p>
                         </div>
+
                 </div>
             </li>
             {% else %}
             <li style="width:100%">
                 <div class="msj-rta macro">
-                   <!-- <div class="avatar"><img class="img-circle" style="width:100%;" src="'+ me.avatar +'" /></div>-->
+
                         <div class="text text-r">
                                 <p>{{msg.text}}</p>
                                 <p><small>{{msg.pub_date}}</small></p>
                         </div>
+                    <div class="avatar"><!--<img class="img-circle" style="width:100%;" src="'+ me.avatar +'" />--><p><small>{{msg.author.first_name}}</small></p></div>
                 </div>
             </li>
             {% endif %}
