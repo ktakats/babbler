@@ -7,7 +7,10 @@
 {% csrf_token%}
 {{form.as_p}}
     {% if user.is_authenticated %}
-<button type="submit" id="id_create_room">Create</button>
+        <button type="submit" id="id_create_room">Create</button>
+        {% for room in rooms %}
+        <p><a href="{{room.get_absolute_url}}">{{room.title}}</a></p>
+        {%endfor%}
     {% else %}
     <button type="submit" id="id_login">Log in</button>
     {% endif %}

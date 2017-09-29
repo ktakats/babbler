@@ -51,6 +51,14 @@ class HomeViewTest(TestCase):
         room = Room.objects.first()
         self.assertRedirects(response, '/room/%s/' % room.title)
 
+    def test_page_shows_existing_rooms(self):
+        create_and_log_in_user(self)
+        room1=Room.objects.create(title="Room1")
+        room2=Room.objects.create(title="Room2")
+        response=self.client.get('/')
+        self.assertContains(response, room1.title)
+        self.assertContains(response, room2.title)
+
 class ChatRoomViewTest(TestCase):
 
     def test_view_uses_chat_template(self):

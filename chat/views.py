@@ -31,7 +31,8 @@ def home(request):
                 room=form.save()
                 return redirect(room.get_absolute_url())
         form=NewRoomForm()
-        return render(request, 'chat/home.html', {'form': form})
+        rooms=Room.objects.all()
+        return render(request, 'chat/home.html', {'form': form, 'rooms': rooms})
 
 def signup(request):
     if request.method=='POST':

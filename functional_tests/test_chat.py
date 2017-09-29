@@ -91,6 +91,7 @@ class SimpleChatTest(FunctionalTest):
 
         body = self.browser.find_element_by_tag_name("body").text
         self.assertIn("Hello world!", body)
+        self.assertIn("Alice", body)
 
         #He decides to answer
         self.browser.find_element_by_id('id_text').send_keys("Hola Alice!")
@@ -139,10 +140,11 @@ class SimpleChatTest(FunctionalTest):
         #Bob logs in
         self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
         #He can see the main room in the main page, he clicks on it
-        self.browser.find_element_by_link_text('Main').click()
+        self.browser.find_element_by_link_text('main').click()
 
         #He can see Alice's earlier message
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Hola, Bob!', body)
         self.assertIn("How are you?", body)
+        self.assertIn("Alice", body)
 
