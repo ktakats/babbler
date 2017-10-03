@@ -54,26 +54,34 @@ class SimpleChatTest(FunctionalTest):
         self.assertIn('Create', body)
 
 
-    def test_simple_room_chat(self):
+    def test_room_chat(self):
 
-        #There's a new chat web app! Alice goes to check it out
+        #There's a new chat web app! Alice, Bob and Cecilia goes to check it out
         self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
         alice_browser=self.browser
+        self.browser = webdriver.Firefox()
+        self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
+        bob_browser = self.browser
+        self.browser = webdriver.Firefox()
+        self.go_to_page_and_log_in('cecilia@example.com', password='ceciliapassword', first_name='Cecilia')
+        cecilia_browser = self.browser
 
-        #She sees that she can create a room
+        #Alice sees that she can create a room, sees Bob and Cecilia listed there and she adds him
+        self.browser.find_element_by_link_text('Create a new room').click()
         self.browser.find_element_by_id('id_title').send_keys('main')
+        self.browser.find_element_by_id('id_bob').click()
         self.browser.find_element_by_id('id_create_room').click()
 
         #It creates the room and and opens it
         title=self.browser.find_element_by_tag_name('title').text
         self.assertEqual(title, 'main')
 
-        #at the same time Bob opens a browser too
-        self.browser=webdriver.Firefox()
-        self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
-        bob_browser=self.browser
-        #he goes to the new room
-        self.browser.get(self.server_url + '/room/main/')
+        #Bob sees the room listed, and goes there
+        self.browser=bob_browser
+        self.browser.get(self.server_url)
+        self.browser.find_element_by_link_text("main").click()
+        title = self.browser.find_element_by_tag_name('title').text
+        self.assertEqual(title, 'main')
         #check_for_bad_request(self)
 
         #Alice sees an input field and a send button

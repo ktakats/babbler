@@ -34,23 +34,6 @@ class HomeViewTest(TestCase):
 
     #logged in
 
-    def test_view_renders_new_room_form_when_user_logged_in(self):
-        create_and_log_in_user(self)
-        response = self.client.get('/')
-        self.assertContains(response, 'id_title')
-
-    def test_submitting_form_creates_new_room(self):
-        create_and_log_in_user(self)
-        self.client.post('/', data={'title': 'Main'})
-        room=Room.objects.first()
-        self.assertEqual(room.title, 'Main')
-
-    def test_creating_room_redirects_to_room(self):
-        create_and_log_in_user(self)
-        response=self.client.post('/', data={'title': 'Main'})
-        room = Room.objects.first()
-        self.assertRedirects(response, '/room/%s/' % room.title)
-
     def test_page_shows_existing_rooms(self):
         create_and_log_in_user(self)
         room1=Room.objects.create(title="Room1")
@@ -58,6 +41,26 @@ class HomeViewTest(TestCase):
         response=self.client.get('/')
         self.assertContains(response, room1.title)
         self.assertContains(response, room2.title)
+
+class NewRoomViewTest(TestCase):
+
+    def test_view_renders_new_room_form(self):
+        create_and_log_in_user(self)
+        response = self.client.get('/new_room/')
+        self.assertContains(response, 'id_title')
+
+    def test_submitting_form_creates_new_room(self):
+        create_and_log_in_user(self)
+        self.client.post('/new_room/', data={'title': 'Main'})
+        room = Room.objects.first()
+        self.assertEqual(room.title, 'Main')
+
+    def test_creating_room_redirects_to_room(self):
+        create_and_log_in_user(self)
+        response = self.client.post('/new_room/', data={'title': 'Main'})
+        room = Room.objects.first()
+        self.assertRedirects(response, '/room/%s/' % room.title)
+
 
 class ChatRoomViewTest(TestCase):
 
