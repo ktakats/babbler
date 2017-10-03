@@ -1,6 +1,7 @@
 from django.test import TestCase
 from chat.models import Room, Message
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 User=get_user_model()
 
@@ -8,6 +9,12 @@ def create_and_log_in_user(self, email='bla@bla.com', password='bla', first_name
     user=User.objects.create_user(email=email, password=password, first_name=first_name)
     self.client.force_login(user)
     return user
+
+def create_room(user, title='main'):
+    group=Group.objects.create(name=title)
+    group.user_set.add(user)
+    room=Room.objects.create(title=title, group_id=group.id)
+    return room
 
 
 class HomeViewTest(TestCase):
@@ -83,43 +90,58 @@ class NewRoomViewTest(TestCase):
 class ChatRoomViewTest(TestCase):
 
     def test_view_uses_chat_template(self):
-        create_and_log_in_user(self)
-        room=Room.objects.create(title='main')
-        response = self.client.get('/room/main/')
+        user=create_and_log_in_user(self)
+        room=create_room(user)
+        response = self.client.get('/room/'+room.title+'/')
         self.assertTemplateUsed(response, 'chat/chat.html')
 
     def test_view_requires_login(self):
-        room=Room.objects.create(title='main')
-        response = self.client.get('/room/main/')
+        user = create_and_log_in_user(self)
+        room = create_room(user)
+        self.client.logout()
+        response = self.client.get('/room/'+room.title+'/')
         self.assertRedirects(response, '/?next=/room/main/')
 
     def test_view_renders_message_form(self):
-        create_and_log_in_user(self)
-        room = Room.objects.create(title='main')
-        response = self.client.get('/room/main/')
+        user = create_and_log_in_user(self)
+        room = create_room(user)
+        response = self.client.get('/room/' + room.title + '/')
         self.assertContains(response, 'id_text')
 
     def test_submitting_form_creates_new_message(self):
-        user=create_and_log_in_user(self)
-        room = Room.objects.create(title='main')
-        self.client.post('/room/main/', data={'text': 'test', 'author': user})
+        user = create_and_log_in_user(self)
+        room = create_room(user)
+        self.client.post('/room/' + room.title + '/', data={'text': 'test', 'author': user})
         msg=Message.objects.first()
         self.assertEqual(msg.text, 'test')
 
     def test_view_shows_previously_sent_messages(self):
         user = create_and_log_in_user(self)
-        room = Room.objects.create(title='main')
+        room = create_room(user)
         msg=Message.objects.create(text='test message', author=user, room=room)
-        response=self.client.get('/room/main/')
+        response=self.client.get('/room/'+room.title+'/')
         self.assertContains(response, 'test message')
 
     def test_messages_show_author_and_time(self):
         user = create_and_log_in_user(self)
-        room = Room.objects.create(title='main')
+        room = create_room(user)
         msg = Message.objects.create(text='test message', author=user, room=room)
-        response = self.client.get('/room/main/')
+        response = self.client.get('/room/' + room.title + '/')
         self.assertContains(response, user.first_name)
         self.assertContains(response, msg.pub_date.strftime("%Y"))
+
+    def test_only_group_members_can_see_view(self):
+        user=create_and_log_in_user(self)
+        second_user=User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        third_user=User.objects.create_user(email='bla3@bla.com', password='blablabla', first_name='NON')
+        group=Group.objects.create(name='test')
+        room=Room.objects.create(title='test', group_id=group.id)
+        group.user_set.add(second_user)
+        group.user_set.add(third_user)
+        response=self.client.get('/room/test/')
+        self.assertRedirects(response, '/')
+
+
 
 class SignupViewTest(TestCase):
 

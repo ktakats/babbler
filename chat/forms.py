@@ -1,12 +1,13 @@
 from django import forms
 from .models import Room, Message
 from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.models import Group
 
 User=get_user_model()
 
 class NewRoomForm(forms.models.ModelForm):
 
-    users=forms.ModelMultipleChoiceField(queryset=None, required=False,)
+    users=forms.ModelMultipleChoiceField(queryset=None, required=False, widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model=Room
@@ -14,7 +15,6 @@ class NewRoomForm(forms.models.ModelForm):
         labels={'title': ''}
         widgets={
             'title': forms.TextInput(attrs={'placeholder': 'Add a new room'}),
-            'users': forms.CheckboxSelectMultiple(),
         }
 
     def __init__(self, user, *args, **kwargs):
@@ -24,7 +24,11 @@ class NewRoomForm(forms.models.ModelForm):
 
     def save(self):
         data=self.cleaned_data
-        room=Room.objects.create(title=data['title'])
+        group = Group.objects.create(name=data['title'])
+        room=Room.objects.create(title=data['title'], group_id=group.id)
+        for user in data['users']:
+            group.user_set.add(user)
+        group.user_set.add(self.user)
         return room
 
 class MsgForm(forms.models.ModelForm):

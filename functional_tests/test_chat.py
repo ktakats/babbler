@@ -1,7 +1,9 @@
 from .base import FunctionalTest
 from selenium import webdriver
 import time
+from django.contrib.auth import get_user_model
 
+User=get_user_model()
 
 def check_for_bad_request(self):
     body=self.browser.find_element_by_tag_name('body').text
@@ -62,14 +64,13 @@ class SimpleChatTest(FunctionalTest):
         self.browser = webdriver.Firefox()
         self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
         bob_browser = self.browser
-        self.browser = webdriver.Firefox()
-        self.go_to_page_and_log_in('cecilia@example.com', password='ceciliapassword', first_name='Cecilia')
-        cecilia_browser = self.browser
+
 
         #Alice sees that she can create a room, sees Bob and Cecilia listed there and she adds him
+        self.browser=alice_browser
         self.browser.find_element_by_link_text('Create a new room').click()
         self.browser.find_element_by_id('id_title').send_keys('main')
-        self.browser.find_element_by_id('id_bob').click()
+        self.browser.find_element_by_id('id_users_0').click()
         self.browser.find_element_by_id('id_create_room').click()
 
         #It creates the room and and opens it
@@ -111,7 +112,7 @@ class SimpleChatTest(FunctionalTest):
         self.assertIn("Hola Alice!", body)
 
         #But then Alice changes to another room and sends a message there
-        self.browser.get(self.server_url)
+        self.browser.get(self.server_url+'/new_room/')
         self.browser.find_element_by_id('id_title').send_keys('other')
         self.browser.find_element_by_id('id_create_room').click()
         check_for_bad_request(self)
@@ -124,6 +125,7 @@ class SimpleChatTest(FunctionalTest):
         body = self.browser.find_element_by_tag_name("body").text
         self.assertNotIn("Hola people!", body)
 
+
         #cleanup
         self.addCleanup(lambda: quit_if_possible(alice_browser))
         self.addCleanup(lambda: quit_if_possible(bob_browser))
@@ -132,10 +134,13 @@ class SimpleChatTest(FunctionalTest):
 
         #Alice goes to the chat app
         self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
+        bob=User.objects.create_user(email='bob@example.com', password='bobpassword', first_name='Bob')
         alice_browser = self.browser
 
         #She creates a room and writes some messages to bob
+        self.browser.find_element_by_link_text('Create a new room').click()
         self.browser.find_element_by_id('id_title').send_keys('main')
+        self.browser.find_element_by_id('id_users_0').click()
         self.browser.find_element_by_id('id_create_room').click()
         self.browser.find_element_by_id('id_text').send_keys("Hola, Bob!")
         self.browser.find_element_by_id('id_send').click()
@@ -147,7 +152,10 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_link_text('Logout').click()
 
         #Bob logs in
-        self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
+        self.browser.get(self.server_url)
+        self.browser.find_element_by_id('id_email').send_keys('bob@example.com')
+        self.browser.find_element_by_id('id_password').send_keys('bobpassword')
+        self.browser.find_element_by_tag_name('button').click()
         #He can see the main room in the main page, he clicks on it
         self.browser.find_element_by_link_text('main').click()
 

@@ -7,6 +7,7 @@ from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm
 from chat.models import Message, Room
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
 User=get_user_model()
 
@@ -59,10 +60,13 @@ def chat(request, room_id):
         room=Room.objects.get(title=room_id)
     except ObjectDoesNotExist:
         return redirect('/')
+    user = request.user
+    group=Group.objects.get(id=room.group_id)
+    if not group in user.groups.all():
+        return redirect('/')
     if request.method=='POST':
         form=MsgForm(request.POST)
         if form.is_valid():
-            user=request.user
             msg=form.save(author=user, room=room)
     form=MsgForm()
     messages=Message.objects.filter(room=room).order_by('pub_date')

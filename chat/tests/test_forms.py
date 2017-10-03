@@ -41,6 +41,21 @@ class NewRoomFormTest(TestCase):
         self.assertIn(second_user.first_name, form.as_p())
         self.assertNotIn(user.first_name, form.as_p())
 
+    def test_saving_form_creates_group_and_adds_users(self):
+        user=create_and_log_in_user(self)
+        second_user=User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        third_user=User.objects.create_user(email='bla3@bla.com', password='blablabla', first_name='Bli')
+        form=NewRoomForm(user, data={'title': 'main', 'users': [second_user, third_user]})
+        form.is_valid()
+        room=form.save()
+        self.assertEqual(user.groups.count(),1)
+        self.assertEqual(second_user.groups.count(), 1)
+        self.assertEqual(third_user.groups.count(), 1)
+        g=user.groups.first()
+        self.assertEqual(g.name, room.title)
+
+
+
 class MsgFormTest(TestCase):
 
     def test_default_test(self):
