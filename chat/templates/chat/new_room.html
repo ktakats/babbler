@@ -1,0 +1,9 @@
+{% extends 'chat/base.html' %}
+
+{% block content %}
+<form method="POST" action="" id="id_new_room_form">
+{% csrf_token%}
+{{form.as_p}}
+        <button type="submit" id="id_create_room">Create</button>
+</form>
+{% endblock %}
