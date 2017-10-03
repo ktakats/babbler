@@ -15,6 +15,16 @@ class NewRoomFormTest(TestCase):
         form=NewRoomForm(data={'title': 'main'})
         self.assertTrue(form.is_valid())
 
+    def test_form_lists_users(self):
+        user = User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test_user')
+        form=NewRoomForm()
+        self.assertIn(user.first_name, form.as_p())
+
+    def test_validation_with_user(self):
+        user = User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test_user')
+        form = NewRoomForm(data={'title': 'main', 'users': [user]})
+        self.assertTrue(form.is_valid())
+
 class MsgFormTest(TestCase):
 
     def test_default_test(self):

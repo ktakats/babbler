@@ -6,12 +6,15 @@ User=get_user_model()
 
 class NewRoomForm(forms.models.ModelForm):
 
+    users=forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=False,)
+
     class Meta:
         model=Room
         fields=['title']
         labels={'title': ''}
         widgets={
-            'title': forms.TextInput(attrs={'placeholder': 'Add a new room'})
+            'title': forms.TextInput(attrs={'placeholder': 'Add a new room'}),
+            'users': forms.CheckboxSelectMultiple(),
         }
 
     def save(self):
