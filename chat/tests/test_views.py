@@ -98,7 +98,7 @@ class ChatRoomViewTest(TestCase):
         msg = Message.objects.create(text='test message', author=user, room=room)
         response = self.client.get('/room/main/')
         self.assertContains(response, user.first_name)
-        self.assertContains(response, msg.pub_date.strftime("%d, %Y"))
+        self.assertContains(response, msg.pub_date.strftime("%Y"))
 
 class SignupViewTest(TestCase):
 

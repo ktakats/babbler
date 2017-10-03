@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.conf import settings
 
 # Create your models here.
@@ -41,7 +41,7 @@ class MyUserManager(BaseUserManager):
 
 
 @python_2_unicode_compatible
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     email=models.EmailField(verbose_name='email address', max_length=255, unique=True,)
     first_name=models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
