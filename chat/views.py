@@ -25,15 +25,10 @@ def home(request):
         form=LoginForm()
         return render(request, 'chat/home.html', {'form': form})
     else:
-        if request.method=='POST':
-            form=NewRoomForm(request.POST)
-            if form.is_valid():
-                room=form.save()
-                return redirect(room.get_absolute_url())
-        form=NewRoomForm()
         rooms=Room.objects.all()
-        return render(request, 'chat/home.html', {'form': form, 'rooms': rooms})
+        return render(request, 'chat/home.html', {'rooms': rooms})
 
+@login_required(login_url='/')
 def new_room(request):
     if request.method=='POST':
         form=NewRoomForm(request.POST)

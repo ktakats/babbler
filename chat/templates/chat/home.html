@@ -3,16 +3,18 @@
 {% block header_text %}Welcome to Babbler{% endblock %}
 
 {% block content %}
-<form method="POST" action="" id="id_new_room_form">
-{% csrf_token%}
-{{form.as_p}}
-    {% if user.is_authenticated %}
-        <button type="submit" id="id_create_room">Create</button>
-        {% for room in rooms %}
-        <p><a href="{{room.get_absolute_url}}">{{room.title}}</a></p>
-        {%endfor%}
-    {% else %}
-    <button type="submit" id="id_login">Log in</button>
-    {% endif %}
-</form>
+
+{% if user.is_authenticated %}
+    {% for room in rooms %}
+    <p><a href="{{room.get_absolute_url}}">{{room.title}}</a></p>
+    {% endfor %}
+    <p><a href="{% url 'new_room' %}">Create a new room</a></p>
+{% else %}
+    <form method="POST" id="id_login_form">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" id="id_login">Log in</button>
+    </form>
+{% endif %}
+
 {% endblock %}

@@ -32,6 +32,15 @@ class HomeViewTest(TestCase):
         response = self.client.get('/')
         self.assertContains(response, 'Sign up')
 
+    def test_view_doesnot_show_rooms(self):
+        room=Room.objects.create(title="Room1")
+        response=self.client.get('/')
+        self.assertNotContains(response, 'Room1')
+
+    def test_view_doesnot_show_link_to_create_room(self):
+        response = self.client.get('/')
+        self.assertNotContains(response, 'Create a new room')
+
     #logged in
 
     def test_page_shows_existing_rooms(self):
@@ -41,6 +50,11 @@ class HomeViewTest(TestCase):
         response=self.client.get('/')
         self.assertContains(response, room1.title)
         self.assertContains(response, room2.title)
+
+    def test_includes_route_to_creating_new_room(self):
+        create_and_log_in_user(self)
+        response=self.client.get('/')
+        self.assertContains(response, 'Create a new room')
 
 class NewRoomViewTest(TestCase):
 
@@ -60,6 +74,10 @@ class NewRoomViewTest(TestCase):
         response = self.client.post('/new_room/', data={'title': 'Main'})
         room = Room.objects.first()
         self.assertRedirects(response, '/room/%s/' % room.title)
+
+    def test_view_requires_login(self):
+        response=self.client.get('/new_room/')
+        self.assertRedirects(response, '/?next=/new_room/')
 
 
 class ChatRoomViewTest(TestCase):
