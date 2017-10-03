@@ -31,11 +31,11 @@ def home(request):
 @login_required(login_url='/')
 def new_room(request):
     if request.method=='POST':
-        form=NewRoomForm(request.POST)
+        form=NewRoomForm(request.user, request.POST)
         if form.is_valid():
             room=form.save()
             return redirect(room.get_absolute_url())
-    form=NewRoomForm()
+    form=NewRoomForm(request.user)
     return render(request, 'chat/new_room.html', {'form': form})
 
 def signup(request):

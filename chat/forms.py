@@ -6,7 +6,7 @@ User=get_user_model()
 
 class NewRoomForm(forms.models.ModelForm):
 
-    users=forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=False,)
+    users=forms.ModelMultipleChoiceField(queryset=None, required=False,)
 
     class Meta:
         model=Room
@@ -16,6 +16,11 @@ class NewRoomForm(forms.models.ModelForm):
             'title': forms.TextInput(attrs={'placeholder': 'Add a new room'}),
             'users': forms.CheckboxSelectMultiple(),
         }
+
+    def __init__(self, user, *args, **kwargs):
+        self.user=user
+        super(NewRoomForm, self).__init__(*args, **kwargs)
+        self.fields['users'].queryset=User.objects.exclude(id=self.user.id)
 
     def save(self):
         data=self.cleaned_data

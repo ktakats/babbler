@@ -5,25 +5,41 @@ from django.contrib import auth
 
 User=auth.get_user_model()
 
+def create_and_log_in_user(self, email='bla@bla.com', password='bla', first_name='Test'):
+    user=User.objects.create_user(email=email, password=password, first_name=first_name)
+    self.client.force_login(user)
+    return user
+
 class NewRoomFormTest(TestCase):
 
     def test_form_has_placeholders(self):
-        form=NewRoomForm()
+        user=create_and_log_in_user(self)
+        form=NewRoomForm(user)
         self.assertIn('Add a new room', form.as_p())
 
     def test_form_validation(self):
-        form=NewRoomForm(data={'title': 'main'})
+        user=create_and_log_in_user(self)
+        form=NewRoomForm(user, data={'title': 'main'})
         self.assertTrue(form.is_valid())
 
     def test_form_lists_users(self):
-        user = User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test_user')
-        form=NewRoomForm()
+        u=create_and_log_in_user(self)
+        user = User.objects.create_user(email='bla2@bla.com', password='bla', first_name='Test_user')
+        form=NewRoomForm(u)
         self.assertIn(user.first_name, form.as_p())
 
     def test_validation_with_user(self):
-        user = User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test_user')
-        form = NewRoomForm(data={'title': 'main', 'users': [user]})
+        u=create_and_log_in_user(self)
+        user = User.objects.create_user(email='bla2@bla.com', password='bla', first_name='Test_user')
+        form = NewRoomForm(u,data={'title': 'main', 'users': [user]})
         self.assertTrue(form.is_valid())
+
+    def test_list_of_users_excludes_owner(self):
+        user=create_and_log_in_user(self)
+        second_user= User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        form=NewRoomForm(user)
+        self.assertIn(second_user.first_name, form.as_p())
+        self.assertNotIn(user.first_name, form.as_p())
 
 class MsgFormTest(TestCase):
 
