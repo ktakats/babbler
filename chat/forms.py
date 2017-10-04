@@ -7,7 +7,7 @@ User=get_user_model()
 
 class NewRoomForm(forms.models.ModelForm):
 
-    users=forms.ModelMultipleChoiceField(queryset=None, required=False, widget=forms.CheckboxSelectMultiple())
+    users=forms.ModelMultipleChoiceField(queryset=None, required=False, widget=forms.CheckboxSelectMultiple(), label='')
 
     class Meta:
         model=Room

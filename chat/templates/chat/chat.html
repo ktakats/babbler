@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="col-sm-6 col-sm-offset-3  frame">
+<div class="frame">
     <ul id="messages">
     {% for msg in messages %}
 
@@ -34,14 +34,21 @@
 
     {% endfor %}
     </ul>
-</div>
-
-<div class="form">
-    <form class="chatform">
-        {{form.as_p}}
-        <button id="id_send" type="submit">Send</button>
+    <div class="chatform">
+    <form autocomplete="off">
+        <div class="row">
+            <div class="col-md-3 ml-auto">
+            {{form.as_p}}
+            </div>
+            <div class="col-md-3 mr-auto">
+                <button id="id_send" type="submit">Send</button>
+            </div>
+        </div>
     </form>
 </div>
+</div>
+
+
 
 {% endblock content %}
 

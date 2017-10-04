@@ -1,25 +1,49 @@
 body {
   font: 13px Helvetica, Arial;
-  text-align: center
+  text-align: center;
+  overflow-x: hidden;
+}
+
+.container {
+    max-width: 50em;
+    align: center;
+}
+
+.main {
+    padding-top: 5em;
+}
+
+.room {
+    border: solid gray 1px;
+    width: 50%;
+    margin: 0 auto;
+    text-align: left;
+    padding-left: 5%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+/* Chatroom*/
+
+.frame{
+    background:#e0e0de;
+    width: 60%;
+    margin: 0 auto;
+    height: 720px;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
 }
 
 
-.form {
+.chatform {
+    margin:0 auto;
     position: absolute;
     bottom: 0%;
-    width:70%;
-    margin-left: 15%;
+    width: 100%;
+    padding-left: 1%;
 }
 
-.chatform input {
-    width: 40%;
-    padding: 10px;
-}
-
-.chatform button {
-    width: 10%;
-    padding: 10px;
-}
 .mytext{
     border:0;
     padding:10px;
@@ -63,6 +87,7 @@ body {
 .msj{
     float:left;background:white;
 }
+/*
 .frame{
     background:#e0e0de;
     height:650px;
@@ -75,7 +100,8 @@ body {
     width:100%;
     display:flex;
 }
-ul {
+*/
+#messages {
     width:100%;
     list-style-type: none;
     padding:18px;
@@ -107,18 +133,11 @@ ul {
     border-width: 13px 13px 0 0;
     border-color: whitesmoke transparent transparent transparent;
 }
-input:focus{
-    outline: none;
-}
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    color: #d4d4d4;
-}
-::-moz-placeholder { /* Firefox 19+ */
-    color: #d4d4d4;
-}
-:-ms-input-placeholder { /* IE 10+ */
-    color: #d4d4d4;
-}
-:-moz-placeholder { /* Firefox 18- */
-    color: #d4d4d4;
+
+/*Create new room*/
+#id_new_room_form ul{
+    list-style-type: none;
+    text-align: left;
+    width: 25%;
+    margin: 0 auto;
 }

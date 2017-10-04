@@ -165,3 +165,32 @@ class SimpleChatTest(FunctionalTest):
         self.assertIn("How are you?", body)
         self.assertIn("Alice", body)
 
+    def test_making_friends(self):
+
+        #Alice goes to the chat app
+        self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
+        alice_browser=self_browser
+        bob = User.objects.create_user(email='bob@example.com', password='bobpassword', first_name='Bob')
+
+        #She can see that she can add friends, so she looks for bob
+        self.browser.find_element_by_id('id_friend').send_keys('bob@example.com')
+        self.browser.find_element_by_id('id_search').click()
+
+        #Bob's name pops up, with a button to invite him
+        self.browser.find_element_by_id('id_invite').click()
+
+        #Alice logs out
+        self.browser.find_element_by_link_text('Logout').click()
+
+        #Bob logs in
+        self.browser.get(self.server_url)
+        self.browser.find_element_by_id('id_email').send_keys('bob@example.com')
+        self.browser.find_element_by_id('id_password').send_keys('bobpassword')
+        self.browser.find_element_by_tag_name('button').click()
+
+        #He can see that he has a new friend request
+        body=self.browser.find_element_by_tag_name('body').text
+        self.assertIn('You have an invitation'. body)
+        self.browser.find_element_by_link_text('accept').click()
+
+

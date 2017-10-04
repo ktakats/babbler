@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chat',
     'channels',
-    'bootstrap3',
+    'bootstrap4',
 ]
 
 AUTH_USER_MODEL='chat.User'

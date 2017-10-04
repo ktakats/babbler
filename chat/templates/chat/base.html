@@ -2,30 +2,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}{% endblock %}</title>
+    <title>Babbler</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static "main.css" %}" type="text/css" media="screen" />
-    {% load bootstrap3 %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    {% load bootstrap4 %}
     {% bootstrap_css %}
+    {% bootstrap_javascript%}
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <header>
+    <div class="container">
+        <div class="header">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" role="navigation">
+                <a class="navbar-brand" href="/">Babbler</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="nav navbar-nav ml-auto">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item"><a href="#" class="nav-link">Hi, {{user.first_name}}!</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign up</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="container main">
         <h1>{% block header_text %}{% endblock %}</h1>
-        {% if user.is_authenticated %}
-            <p>Hi, {{user.first_name}}</p>
-            <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'signup' %}">Sign up</a>
-        {% endif %}
-    </header>
-    <section>
+
+    </div>
+    <div class="container">
         {% block content %}
         {% endblock %}
-    </section>
+    </div>
     {% block extra_body %}{% endblock %}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
   {% block script %}{% endblock script %}
 </body>
 </html>

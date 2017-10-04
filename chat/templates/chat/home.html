@@ -6,7 +6,7 @@
 
 {% if user.is_authenticated %}
     {% for room in rooms %}
-    <p><a href="{{room.get_absolute_url}}">{{room.title}}</a></p>
+    <p class="room"><a href="{{room.get_absolute_url}}">{{room.title}}</a></p>
     {% endfor %}
     <p><a href="{% url 'new_room' %}">Create a new room</a></p>
 {% else %}
