@@ -32,7 +32,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_first_name').send_keys('Alice')
         self.browser.find_element_by_id('id_password1').send_keys('blabla')
         self.browser.find_element_by_id('id_password2').send_keys("blabla")
-        self.browser.find_element_by_tag_name('button').click()
+        self.browser.find_element_by_id('id_signup').click()
 
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Hi, Alice', body)
@@ -48,7 +48,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.get(self.server_url)
         self.browser.find_element_by_id('id_email').send_keys('alice@bla.com')
         self.browser.find_element_by_id('id_password').send_keys('blabla')
-        self.browser.find_element_by_tag_name('button').click()
+        self.browser.find_element_by_id('id_login').click()
 
         #Now she's logged in and create rooms
         body=self.browser.find_element_by_tag_name('body').text
@@ -155,7 +155,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.get(self.server_url)
         self.browser.find_element_by_id('id_email').send_keys('bob@example.com')
         self.browser.find_element_by_id('id_password').send_keys('bobpassword')
-        self.browser.find_element_by_tag_name('button').click()
+        self.browser.find_element_by_id('id_login').click()
         #He can see the main room in the main page, he clicks on it
         self.browser.find_element_by_link_text('main').click()
 
@@ -169,10 +169,11 @@ class SimpleChatTest(FunctionalTest):
 
         #Alice goes to the chat app
         self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
-        alice_browser=self_browser
+        alice_browser=self.browser
         bob = User.objects.create_user(email='bob@example.com', password='bobpassword', first_name='Bob')
 
         #She can see that she can add friends, so she looks for bob
+        self.browser.find_element_by_link_text('Find friends').click()
         self.browser.find_element_by_id('id_friend').send_keys('bob@example.com')
         self.browser.find_element_by_id('id_search').click()
 

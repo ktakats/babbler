@@ -6,6 +6,7 @@ from django.contrib import auth
 from django.conf import settings
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth import BACKEND_SESSION_KEY, SESSION_KEY
+import time
 
 User=auth.get_user_model()
 
@@ -37,4 +38,4 @@ class FunctionalTest(ChannelLiveServerTestCase):
         User.objects.create_user(email=email, password=password, first_name=first_name)
         self.browser.find_element_by_id('id_email').send_keys(email)
         self.browser.find_element_by_id('id_password').send_keys(password)
-        self.browser.find_element_by_tag_name('button').click()
+        self.browser.find_element_by_id('id_login').click()
