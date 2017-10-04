@@ -1,0 +1,9 @@
+{% extends 'chat/base.html'%}
+
+{% block content %}
+<form>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" id="id_search">Search</button>
+</form>
+{% endblock %}

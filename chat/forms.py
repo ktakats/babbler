@@ -43,6 +43,12 @@ class MsgForm(forms.models.ModelForm):
         msg=Message.objects.create(text=data['text'], author=author, room=room)
         return msg
 
+class FindFriendForm(forms.models.ModelForm):
+
+    class Meta:
+        model=User
+        fields=['email']
+
 class SignupForm(forms.models.ModelForm):
     password1=forms.CharField(label='Password', widget=forms.PasswordInput)
     password2=forms.CharField(label='Confirm password', widget=forms.PasswordInput)

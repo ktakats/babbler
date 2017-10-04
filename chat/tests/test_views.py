@@ -141,7 +141,15 @@ class ChatRoomViewTest(TestCase):
         response=self.client.get('/room/test/')
         self.assertRedirects(response, '/')
 
+class FindFriendsViewTest(TestCase):
 
+    def test_view_uses_findfriends_template(self):
+        response=self.client.get('/find_friends/')
+        self.assertTemplateUsed(response, 'chat/find_friends.html')
+
+    def test_view_renders_form(self):
+        response = self.client.get('/find_friends/')
+        self.assertContains(response, 'id_email')
 
 class SignupViewTest(TestCase):
 

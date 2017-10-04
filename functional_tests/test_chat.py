@@ -174,10 +174,12 @@ class SimpleChatTest(FunctionalTest):
 
         #She can see that she can add friends, so she looks for bob
         self.browser.find_element_by_link_text('Find friends').click()
-        self.browser.find_element_by_id('id_friend').send_keys('bob@example.com')
+        self.browser.find_element_by_id('id_email').send_keys('bob@example.com')
         self.browser.find_element_by_id('id_search').click()
 
         #Bob's name pops up, with a button to invite him
+        body=self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Bob', body)
         self.browser.find_element_by_id('id_invite').click()
 
         #Alice logs out
