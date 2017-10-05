@@ -1,14 +1,28 @@
 {% extends 'chat/base.html'%}
 
+{% block title %}Find friends{% endblock %}
+
 {% block content %}
 <form method="get">
-    {% csrf_token %}
     <input type="text" name="email" id="id_email" placeholder="Email"/>
     <button type="submit" id="id_search">Search</button>
 </form>
 
 {% if friend %}
-<p>{{friend.first_name}}</p>
+<div class="friend">
+    <div class="row">
+        <div class="col-md-3">
+            <p>{{friend.first_name}}</p>
+            <p>{{friend.email}}</p>
+        </div>
+        <div class="col-md-3 ml-auto">
+            <form method="get">
+                <input type="hidden" name="invite" value="{{friend.id}}"/>
+                <button type="submit">Invite</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endif %}
 
 {% if messages %}

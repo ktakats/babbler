@@ -23,6 +23,13 @@ body {
     padding-bottom: 2%;
 }
 
+.friend {
+    width: 50%;
+    margin: 0 auto;
+    text-align: left;
+    padding: 5%;
+}
+
 /* Chatroom*/
 
 .frame{

@@ -11,6 +11,7 @@ from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.forms import ValidationError
+from friendship.models import Friend
 
 User=get_user_model()
 
@@ -42,6 +43,7 @@ def new_room(request):
     form=NewRoomForm(request.user)
     return render(request, 'chat/new_room.html', {'form': form})
 
+@login_required(login_url='/')
 def find_friends(request):
     user=None
     if 'email' in request.GET:
@@ -53,6 +55,9 @@ def find_friends(request):
             user=User.objects.get(email=request.GET['email'])
         except ObjectDoesNotExist:
             messages.error(request, 'No result')
+    if 'invite' in request.GET:
+        invitee=User.objects.get(id=request.GET['invite'])
+        Friend.objects.add_friend(request.user, invitee)
     return render(request, 'chat/find_friends.html', {'friend': user})
 
 def signup(request):

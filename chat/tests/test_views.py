@@ -2,6 +2,7 @@ from django.test import TestCase
 from chat.models import Room, Message
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from friendship.models import FriendshipRequest
 
 User=get_user_model()
 
@@ -144,26 +145,43 @@ class ChatRoomViewTest(TestCase):
 class FindFriendsViewTest(TestCase):
 
     def test_view_uses_findfriends_template(self):
+        user=create_and_log_in_user(self)
         response=self.client.get('/find_friends/')
         self.assertTemplateUsed(response, 'chat/find_friends.html')
 
     def test_view_renders_form(self):
+        user=create_and_log_in_user(self)
         response = self.client.get('/find_friends/')
         self.assertContains(response, 'email')
 
     def test_searching_for_email_returns_user(self):
-        user=User.objects.create_user(email='bla@bla.com', password='blabla', first_name='Test')
+        user=create_and_log_in_user(self)
         response=self.client.get('/find_friends/', data={'email': user.email})
         self.assertContains(response, user.first_name)
 
     def test_searching_for_nonexistent_email_returns_noresult(self):
-        response = self.client.get('/find_friends/', data={'email': 'bla@bla.com'})
+        user=create_and_log_in_user(self)
+        response = self.client.get('/find_friends/', data={'email': 'bla2@bla.com'})
         self.assertContains(response, 'No result')
 
     def test_has_to_validate_email(self):
-        user = User.objects.create_user(email='bla@bla.com', password='blabla', first_name='Test')
+        user =create_and_log_in_user(self)
         response = self.client.get('/find_friends/', data={'email': 'vla.com'})
         self.assertContains(response, 'Not a valid email')
+
+    def test_requires_login(self):
+        user = User.objects.create_user(email='bla@bla.com', password='blabla', first_name='Test')
+        response = self.client.get('/find_friends/')
+        self.assertRedirects(response, '/?next=/find_friends/')
+
+    def test_invite_creates_friend_request(self):
+        user=create_and_log_in_user(self)
+        second_user=User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        response=self.client.get('/find_friends/', data={'invite': second_user.id})
+        f=FriendshipRequest.objects.first()
+        self.assertEquals(f.from_user.id, user.id)
+        self.assertEquals(f.to_user.id, second_user.id)
+
 
 class SignupViewTest(TestCase):
 

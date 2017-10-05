@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'chat',
     'channels',
     'bootstrap4',
+    'friendship'
 ]
 
 AUTH_USER_MODEL='chat.User'

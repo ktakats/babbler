@@ -26,7 +26,6 @@ class UserModelTest(TestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.first(), user)
 
-
 class MessageModelTest(TestCase):
 
     def test_can_create_message(self):
