@@ -149,7 +149,9 @@ class FindFriendsViewTest(TestCase):
 
     def test_view_renders_form(self):
         response = self.client.get('/find_friends/')
-        self.assertContains(response, 'id_email')
+        self.assertContains(response, 'email')
+
+
 
 class SignupViewTest(TestCase):
 

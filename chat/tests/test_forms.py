@@ -1,5 +1,5 @@
 from django.test import TestCase
-from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm, FindFriendForm
+from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm
 from chat.models import Room
 from django.contrib import auth
 
@@ -53,12 +53,6 @@ class NewRoomFormTest(TestCase):
         self.assertEqual(third_user.groups.count(), 1)
         g=user.groups.first()
         self.assertEqual(g.name, room.title)
-
-class FindFriendFormTest(TestCase):
-
-    def test_default_test(self):
-        form=FindFriendForm()
-        self.assertIn('id_email', form.as_p())
 
 class MsgFormTest(TestCase):
 

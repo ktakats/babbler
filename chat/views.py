@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import redirect, render
 from django.core.exceptions import ObjectDoesNotExist
-from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm, FindFriendForm
+from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm
 from chat.models import Message, Room
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -40,8 +40,7 @@ def new_room(request):
     return render(request, 'chat/new_room.html', {'form': form})
 
 def find_friends(request):
-    form=FindFriendForm()
-    return render(request, 'chat/find_friends.html', {'form': form})
+    return render(request, 'chat/find_friends.html')
 
 def signup(request):
     if request.method=='POST':
