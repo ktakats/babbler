@@ -30,6 +30,13 @@ body {
     padding: 5%;
 }
 
+.pms {
+    width: 50%;
+    margin: 0 auto;
+    text-align: left;
+    padding: 5%;
+}
+
 /* Chatroom*/
 
 .frame{

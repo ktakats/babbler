@@ -1,0 +1,25 @@
+{% extends 'chat/base.html' %}
+
+{% block content %}
+
+{% for pm in pms %}
+    <div class="pms">
+        <div class="row">
+            <div class="col-md-3">
+                {{pm.message}}
+            </div>
+            <div class="col-md-3 ml-auto">
+                <form method="get">
+                    <input type="hidden" name="accept" value="{{pm.pk}}"/>
+                    <button type="submit">Accept</button>
+                </form>
+                <form method="get">
+                    <input type="hidden" name="decline" value="{{pm.pk}}">
+                    <button type="submit">Decline</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

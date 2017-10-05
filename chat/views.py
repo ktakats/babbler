@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.forms import ValidationError
-from friendship.models import Friend
+from friendship.models import Friend, FriendshipRequest
 
 User=get_user_model()
 
@@ -57,8 +57,23 @@ def find_friends(request):
             messages.error(request, 'No result')
     if 'invite' in request.GET:
         invitee=User.objects.get(id=request.GET['invite'])
-        Friend.objects.add_friend(request.user, invitee)
+        msg=request.user.first_name + '(' + request.user.email + ') would like to connect with you.'
+        Friend.objects.add_friend(request.user, invitee, message=msg)
+        user=None
+        messages.success(request, 'Invite sent to ' + invitee.first_name + '!')
     return render(request, 'chat/find_friends.html', {'friend': user})
+
+@login_required(login_url='/')
+def pm(request):
+    if 'accept' in request.GET:
+        f=FriendshipRequest.objects.get(pk=request.GET['accept'])
+        f.accept()
+    if 'decline' in request.GET:
+        f = FriendshipRequest.objects.get(pk=request.GET['decline'])
+        f.reject()
+        f.delete()
+    pms=Friend.objects.unread_requests(user=request.user)
+    return render(request, 'chat/messages.html', {'pms': pms})
 
 def signup(request):
     if request.method=='POST':

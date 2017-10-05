@@ -2,7 +2,7 @@ from django.test import TestCase
 from chat.models import Room, Message
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from friendship.models import FriendshipRequest
+from friendship.models import Friend, FriendshipRequest
 
 User=get_user_model()
 
@@ -181,7 +181,49 @@ class FindFriendsViewTest(TestCase):
         f=FriendshipRequest.objects.first()
         self.assertEquals(f.from_user.id, user.id)
         self.assertEquals(f.to_user.id, second_user.id)
+        self.assertContains(response, 'Invite sent to '+ second_user.first_name + '!')
 
+class MessagesViewTest(TestCase):
+
+    def test_view_uses_messages_template(self):
+        user=create_and_log_in_user(self)
+        response=self.client.get('/pm/')
+        self.assertTemplateUsed(response, 'chat/messages.html')
+
+    def test_view_requires_login(self):
+        response = self.client.get('/pm/')
+        self.assertRedirects(response, '/?next=/pm/')
+
+    def test_view_shows_pending_friend_requests(self):
+        user=create_and_log_in_user(self)
+        second_user = User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        Friend.objects.add_friend(second_user, user, message=second_user.first_name + ' wants to connect')
+        response=self.client.get('/pm/')
+        self.assertContains(response, second_user.first_name)
+        self.assertContains(response, 'Accept')
+        self.assertContains(response, 'Decline')
+
+    def test_accepting_request_creates_friendship(self):
+        user = create_and_log_in_user(self)
+        second_user = User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        third_user=User.objects.create_user(email='bla3@bla.com', password='blabla', first_name='Joe')
+        Friend.objects.add_friend(second_user, user, message=second_user.first_name + ' wants to connect')
+        Friend.objects.add_friend(third_user, user, message=third_user.first_name + ' wants to connect')
+        f=FriendshipRequest.objects.get(from_user_id=second_user.id)
+        response=self.client.get('/pm/', data={'accept': f.id})
+        self.assertEquals(Friend.objects.count(), 2)
+        self.assertNotContains(response, second_user.first_name)
+
+    def test_declining_request_doesnot_create_friendship(self):
+        user = create_and_log_in_user(self)
+        second_user = User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        third_user = User.objects.create_user(email='bla3@bla.com', password='blabla', first_name='Joe')
+        Friend.objects.add_friend(second_user, user, message=second_user.first_name + ' wants to connect')
+        Friend.objects.add_friend(third_user, user, message=third_user.first_name + ' wants to connect')
+        f = FriendshipRequest.objects.get(from_user_id=second_user.id)
+        response = self.client.get('/pm/', data={'decline': f.id})
+        self.assertEquals(Friend.objects.count(), 0)
+        self.assertNotContains(response, second_user.first_name)
 
 class SignupViewTest(TestCase):
 
