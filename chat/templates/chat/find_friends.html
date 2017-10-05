@@ -3,7 +3,17 @@
 {% block content %}
 <form method="get">
     {% csrf_token %}
-    <input type="text" name="email"/>
+    <input type="text" name="email" id="id_email" placeholder="Email"/>
     <button type="submit" id="id_search">Search</button>
 </form>
+
+{% if friend %}
+<p>{{friend.first_name}}</p>
+{% endif %}
+
+{% if messages %}
+    {% for message in messages %}
+        {{message | safe}}
+    {% endfor %}
+{% endif %}
 {% endblock %}

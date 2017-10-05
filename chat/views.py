@@ -2,12 +2,15 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import redirect, render
+from django.core.validators import validate_email
 from django.core.exceptions import ObjectDoesNotExist
 from chat.forms import MsgForm, NewRoomForm, SignupForm, LoginForm
 from chat.models import Message, Room
+from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from django.forms import ValidationError
 
 User=get_user_model()
 
@@ -40,7 +43,17 @@ def new_room(request):
     return render(request, 'chat/new_room.html', {'form': form})
 
 def find_friends(request):
-    return render(request, 'chat/find_friends.html')
+    user=None
+    if 'email' in request.GET:
+        try:
+            validate_email(request.GET['email'])
+        except ValidationError:
+            messages.error(request, 'Not a valid email')
+        try:
+            user=User.objects.get(email=request.GET['email'])
+        except ObjectDoesNotExist:
+            messages.error(request, 'No result')
+    return render(request, 'chat/find_friends.html', {'friend': user})
 
 def signup(request):
     if request.method=='POST':

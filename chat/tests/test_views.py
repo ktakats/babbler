@@ -151,7 +151,19 @@ class FindFriendsViewTest(TestCase):
         response = self.client.get('/find_friends/')
         self.assertContains(response, 'email')
 
+    def test_searching_for_email_returns_user(self):
+        user=User.objects.create_user(email='bla@bla.com', password='blabla', first_name='Test')
+        response=self.client.get('/find_friends/', data={'email': user.email})
+        self.assertContains(response, user.first_name)
 
+    def test_searching_for_nonexistent_email_returns_noresult(self):
+        response = self.client.get('/find_friends/', data={'email': 'bla@bla.com'})
+        self.assertContains(response, 'No result')
+
+    def test_has_to_validate_email(self):
+        user = User.objects.create_user(email='bla@bla.com', password='blabla', first_name='Test')
+        response = self.client.get('/find_friends/', data={'email': 'vla.com'})
+        self.assertContains(response, 'Not a valid email')
 
 class SignupViewTest(TestCase):
 
