@@ -2,6 +2,7 @@ from django import forms
 from .models import Room, Message
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import Group
+from friendship.models import Friend
 
 User=get_user_model()
 
@@ -20,7 +21,8 @@ class NewRoomForm(forms.models.ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user=user
         super(NewRoomForm, self).__init__(*args, **kwargs)
-        self.fields['users'].queryset=User.objects.exclude(id=self.user.id)
+        friends=[u.id for u in Friend.objects.friends(user)]
+        self.fields['users'].queryset=User.objects.filter(id__in=friends)
 
     def save(self):
         data=self.cleaned_data

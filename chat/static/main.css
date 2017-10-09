@@ -37,6 +37,10 @@ body {
     padding: 5%;
 }
 
+.fa-envelope-o {
+    color: red;
+}
+
 /* Chatroom*/
 
 .frame{

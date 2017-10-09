@@ -64,6 +64,13 @@ class HomeViewTest(TestCase):
         response=self.client.get('/')
         self.assertContains(response, 'Create a new room')
 
+    def test_view_shows_if_theres_request(self):
+        user=create_and_log_in_user(self)
+        second_user=User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        Friend.objects.add_friend(second_user, user)
+        response=self.client.get('/')
+        self.assertContains(response, 'fa-envelope-o')
+
 class NewRoomViewTest(TestCase):
 
     def test_view_renders_new_room_form(self):
@@ -87,6 +94,14 @@ class NewRoomViewTest(TestCase):
         response=self.client.get('/new_room/')
         self.assertRedirects(response, '/?next=/new_room/')
 
+    def test_only_the_friends_of_user_are_shown(self):
+        user=create_and_log_in_user(self)
+        second_user=User.objects.create_user(email='bla2@bla.com', password='bla', first_name='Test')
+        third_user=User.objects.create_user(email='bla3@bla.com', password='blabla', first_name='Third')
+        Friend.objects.create(from_user=user, to_user=second_user)
+        response=self.client.get('/new_room/')
+        self.assertContains(response, second_user.first_name)
+        self.assertNotContains(response, third_user.first_name)
 
 class ChatRoomViewTest(TestCase):
 

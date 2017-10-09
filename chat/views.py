@@ -31,7 +31,9 @@ def home(request):
         return render(request, 'chat/home.html', {'form': form})
     else:
         rooms=Room.objects.all()
-        return render(request, 'chat/home.html', {'rooms': rooms})
+        pms = Friend.objects.unread_requests(user=request.user)
+        pms=len(pms)
+        return render(request, 'chat/home.html', {'rooms': rooms, 'pms': pms})
 
 @login_required(login_url='/')
 def new_room(request):

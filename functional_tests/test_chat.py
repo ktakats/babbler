@@ -64,11 +64,42 @@ class SimpleChatTest(FunctionalTest):
         self.browser = webdriver.Firefox()
         self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
         bob_browser = self.browser
+        self.browser = webdriver.Firefox()
+        self.go_to_page_and_log_in('cecilia@example.com', password='ceciliapassword', first_name='Cecilia')
+        cecilia_browser = self.browser
 
-
-        #Alice sees that she can create a room, sees Bob and Cecilia listed there and she adds him
+        #Alice and Bob know each other, so Alice invites Bob to be her friend
         self.browser=alice_browser
+        self.browser.find_element_by_link_text('Find friends').click()
+        self.browser.find_element_by_id('id_email').send_keys('bob@example.com')
+        self.browser.find_element_by_id('id_search').click()
+
+        # Bob's name pops up, with a button to invite him
+        body = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Bob', body)
+        self.browser.find_element_by_id('id_invite').click()
+
+        #Bob can see that he has an invite
+        self.browser=bob_browser
+        self.browser.get(self.server_url)
+        self.browser.find_element_by_class_name('fa-envelope-o').click()
+
+        #He accepts the invite
+        body = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Bob', body)
+        self.browser.find_element_by_id('id_accept').click()
+
+        #Alice decides to start a chat room
+        self.browser=alice_browser
+        self.browser.get(self.server_url)
+
+        #Bob is in the list, but Cecilia is not
         self.browser.find_element_by_link_text('Create a new room').click()
+        body=self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Bob', body)
+        self.assertNotIn('Cecilia', body)
+
+
         self.browser.find_element_by_id('id_title').send_keys('main')
         self.browser.find_element_by_id('id_users_0').click()
         self.browser.find_element_by_id('id_create_room').click()
@@ -125,10 +156,17 @@ class SimpleChatTest(FunctionalTest):
         body = self.browser.find_element_by_tag_name("body").text
         self.assertNotIn("Hola people!", body)
 
+        #Cecilia can't even see the room
+        self.browser=cecilia_browser
+        self.browser.get(self.server_url)
+        body=self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('main', body)
+
 
         #cleanup
         self.addCleanup(lambda: quit_if_possible(alice_browser))
         self.addCleanup(lambda: quit_if_possible(bob_browser))
+        self.addCleanup(lambda: quit_if_possible(cecilia_browser))
 
     def test_chat_messages_are_saved(self):
 
@@ -189,11 +227,9 @@ class SimpleChatTest(FunctionalTest):
         self.browser.get(self.server_url)
         self.browser.find_element_by_id('id_email').send_keys('bob@example.com')
         self.browser.find_element_by_id('id_password').send_keys('bobpassword')
-        self.browser.find_element_by_tag_name('button').click()
+        self.browser.find_element_by_id('id_login').click()
 
         #He can see that he has a new friend request
-        body=self.browser.find_element_by_tag_name('body').text
-        self.assertIn('You have an invitation'. body)
-        self.browser.find_element_by_link_text('accept').click()
-
+        self.browser.find_element_by_class_name("fa-envelope-o").click()
+        self.browser.find_element_by_id('id_accept').click()
 
