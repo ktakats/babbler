@@ -149,7 +149,7 @@ class SimpleChatTest(FunctionalTest):
         check_for_bad_request(self)
         self.browser.find_element_by_id('id_text').send_keys("Hola people!")
         self.browser.find_element_by_id('id_send').click()
-        time.sleep(5)
+        time.sleep(0.5)
 
         #And since Bob is in the first room, he can't see it
         self.browser=bob_browser

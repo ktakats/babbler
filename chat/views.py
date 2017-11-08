@@ -30,7 +30,8 @@ def home(request):
         form=LoginForm()
         return render(request, 'chat/home.html', {'form': form})
     else:
-        rooms=Room.objects.all()
+        #find roooms with user in them
+        rooms=Room.objects.filter(group__in=request.user.groups.all())
         pms = Friend.objects.unread_requests(user=request.user)
         pms=len(pms)
         return render(request, 'chat/home.html', {'rooms': rooms, 'pms': pms})
@@ -99,7 +100,8 @@ def chat(request, room_id):
     except ObjectDoesNotExist:
         return redirect('/')
     user = request.user
-    group=Group.objects.get(id=room.group_id)
+    #group=Group.objects.get(id=room.group_id)
+    group=room.group
     if not group in user.groups.all():
         return redirect('/')
     if request.method=='POST':

@@ -5,13 +5,15 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.conf import settings
+from django.contrib.auth.models import Group
 
 # Create your models here.
 
 class Room(models.Model):
 
     title=models.CharField(max_length=200)
-    group_id=models.IntegerField(blank=True, null=True)
+    #group_id=models.IntegerField(blank=True, null=True)
+    group=models.ForeignKey(Group)
 
     def __str__(self):
         return self.title

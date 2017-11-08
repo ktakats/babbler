@@ -27,7 +27,7 @@ class NewRoomForm(forms.models.ModelForm):
     def save(self):
         data=self.cleaned_data
         group = Group.objects.create(name=data['title'])
-        room=Room.objects.create(title=data['title'], group_id=group.id)
+        room=Room.objects.create(title=data['title'], group=group)
         for user in data['users']:
             group.user_set.add(user)
         group.user_set.add(self.user)

@@ -52,9 +52,13 @@ class HomeViewTest(TestCase):
     #logged in
 
     def test_page_shows_existing_rooms(self):
-        create_and_log_in_user(self)
-        room1=Room.objects.create(title="Room1")
-        room2=Room.objects.create(title="Room2")
+        user=create_and_log_in_user(self)
+        group1 = Group.objects.create(name='room1')
+        room1=Room.objects.create(title="Room1", group=group1)
+        group2 = Group.objects.create(name='room2')
+        room2=Room.objects.create(title="Room2", group=group2)
+        group1.user_set.add(user)
+        group2.user_set.add(user)
         response=self.client.get('/')
         self.assertContains(response, room1.title)
         self.assertContains(response, room2.title)
@@ -70,6 +74,17 @@ class HomeViewTest(TestCase):
         Friend.objects.add_friend(second_user, user)
         response=self.client.get('/')
         self.assertContains(response, 'fa-envelope-o')
+
+    def test_view_only_shows_room_where_user_belongs(self):
+        user = create_and_log_in_user(self)
+        second_user = User.objects.create_user(email='bla2@bla.com', password='bla', first_name='Test')
+        third_user = User.objects.create_user(email='bla3@bla.com', password='blabla', first_name='Third')
+        group = Group.objects.create(name='test')
+        room = Room.objects.create(title='test', group=group)
+        group.user_set.add(second_user)
+        group.user_set.add(third_user)
+        response = self.client.get('/')
+        self.assertNotContains(response, room.title)
 
 class NewRoomViewTest(TestCase):
 
