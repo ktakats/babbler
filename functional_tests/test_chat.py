@@ -2,13 +2,10 @@ from .base import FunctionalTest
 from selenium import webdriver
 import time
 from django.contrib.auth import get_user_model
+from friendship.models import Friend
+
 
 User=get_user_model()
-
-def check_for_bad_request(self):
-    body=self.browser.find_element_by_tag_name('body').text
-    if "Bad Request" in body:
-        self.browser.refresh()
 
 
 def quit_if_possible(browser):
@@ -146,7 +143,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.get(self.server_url+'/new_room/')
         self.browser.find_element_by_id('id_title').send_keys('other')
         self.browser.find_element_by_id('id_create_room').click()
-        check_for_bad_request(self)
+        #check_for_bad_request(self)
         self.browser.find_element_by_id('id_text').send_keys("Hola people!")
         self.browser.find_element_by_id('id_send').click()
         time.sleep(0.5)
@@ -171,9 +168,11 @@ class SimpleChatTest(FunctionalTest):
     def test_chat_messages_are_saved(self):
 
         #Alice goes to the chat app
-        self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
+        alice=self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
         bob=User.objects.create_user(email='bob@example.com', password='bobpassword', first_name='Bob')
         alice_browser = self.browser
+
+        Friend.objects.create(from_user=bob, to_user=alice)
 
         #She creates a room and writes some messages to bob
         self.browser.find_element_by_link_text('Create a new room').click()

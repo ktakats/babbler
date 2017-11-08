@@ -35,7 +35,9 @@ class FunctionalTest(ChannelLiveServerTestCase):
 
     def go_to_page_and_log_in(self, email, password, first_name):
         self.browser.get(self.server_url)
-        User.objects.create_user(email=email, password=password, first_name=first_name)
+        user=User.objects.create_user(email=email, password=password, first_name=first_name)
         self.browser.find_element_by_id('id_email').send_keys(email)
         self.browser.find_element_by_id('id_password').send_keys(password)
         self.browser.find_element_by_id('id_login').click()
+        return user
+
