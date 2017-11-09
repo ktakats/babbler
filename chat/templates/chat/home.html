@@ -1,19 +1,27 @@
 {% extends 'chat/base.html'%}
 
-{% block header_text %}Welcome to Babbler{% endblock %}
-
+{% block header_text %}
+{% if user.is_authenticated %}
+{% else %}
+    Welcome to Babbler
+{% endif %}
+{% endblock %}
 {% block content %}
 
 {% if user.is_authenticated %}
+    <div class="new_room_button_div">
+    <a href="{% url 'new_room' %}" class="add-new-room"><button class="btn btn-primary btn-circle"><i class="fa fa-plus"></i></button></a>
+    </div>
+    <div>
     {% for room in rooms %}
-    <p class="room"><a href="{{room.get_absolute_url}}">{{room.title}}</a></p>
+    <a href="{{room.get_absolute_url}}"><div class="room">{{room.title}}</div></a>
     {% endfor %}
-    <p><a href="{% url 'new_room' %}">Create a new room</a></p>
+    </div>
 {% else %}
     <form method="POST" id="id_login_form">
         {% csrf_token %}
         {{form.as_p}}
-        <button type="submit" id="id_login">Log in</button>
+        <button type="submit" id="id_login" class="btn btn-secondary">Log in</button>
     </form>
 {% endif %}
 

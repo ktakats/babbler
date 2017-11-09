@@ -2,6 +2,7 @@ body {
   font: 13px Helvetica, Arial;
   text-align: center;
   overflow-x: hidden;
+  color: #454545;
 }
 
 .container {
@@ -9,18 +10,63 @@ body {
     align: center;
 }
 
+.navbar-custom {
+    background: #93B7BE;
+    color: #F1FFFA;
+}
+
+label {
+    display: inline-block;
+    width: 140px;
+    text-align: right;
+}
+
+.btn-secondary {
+    color: #F1FFFA !important;
+    background-color: #93B7BE !important;
+    border-color: #F1FFFA !important;
+}
+
+.btn-circle {
+    width: 50px !important;
+    height: 50px  !important;
+    padding: 6px 0px  !important;
+    border-radius: 25px  !important;
+    border-color: #93B7BE !important;
+    text-align: center  !important;
+    font-size: 12px  !important;
+    line-height: 1.42857  !important;
+    background-color: transparent !important;
+    color: #93B7BE !important;
+}
+
+.new_room_button_div {
+    height: 55px;
+}
+
+.add-new-room{
+    float: right;
+    margin-right: 25%;
+}
+
 .main {
-    padding-top: 5em;
+    padding: 5em;
 }
 
 .room {
-    border: solid gray 1px;
+    border: solid 1px;
+    border-color: #93B7BE !important;
+    color: #454545 !important;
     width: 50%;
     margin: 0 auto;
     text-align: left;
     padding-left: 5%;
     padding-top: 2%;
     padding-bottom: 2%;
+}
+
+.room a a:hover a:visited{
+    text-decoration: none !important;
 }
 
 .friend {
