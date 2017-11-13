@@ -19,6 +19,7 @@ class RoomModelTest(TestCase):
         self.assertEqual(room.get_absolute_url(), '/room/%s/' % (room.title))
 
 
+
 class UserModelTest(TestCase):
 
     def test_can_create_user(self):

@@ -16,7 +16,7 @@ class NewRoomFormTest(TestCase):
     def test_form_has_placeholders(self):
         user=create_and_log_in_user(self)
         form=NewRoomForm(user)
-        self.assertIn('Add a new room', form.as_p())
+        self.assertIn('Name of the new room', form.as_p())
 
     def test_form_validation(self):
         user=create_and_log_in_user(self)

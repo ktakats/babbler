@@ -15,7 +15,12 @@
     </div>
     <div>
     {% for room in rooms %}
-    <a href="{{room.get_absolute_url}}"><div class="room">{{room.title}}</div></a>
+        <a href="{{room.get_absolute_url}}"><div class="room">{{room.title}}
+            {% with room.message_set.last as msg%}
+                {{msg.author.first_name}}
+                {{msg.pub_date|timesince}} ago
+            {% endwith %}
+        </div></a>
     {% endfor %}
     </div>
 {% else %}

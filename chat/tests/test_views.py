@@ -66,7 +66,7 @@ class HomeViewTest(TestCase):
     def test_includes_route_to_creating_new_room(self):
         create_and_log_in_user(self)
         response=self.client.get('/')
-        self.assertContains(response, 'Create a new room')
+        self.assertContains(response, 'fa-plus')
 
     def test_view_shows_if_theres_request(self):
         user=create_and_log_in_user(self)
@@ -85,6 +85,19 @@ class HomeViewTest(TestCase):
         group.user_set.add(third_user)
         response = self.client.get('/')
         self.assertNotContains(response, room.title)
+
+    def test_view_shows_author_and_time_of_last_message_in_room(self):
+        user = create_and_log_in_user(self)
+        second_user = User.objects.create_user(email='bla2@bla.com', password='bla', first_name='Bob')
+        third_user = User.objects.create_user(email='bla3@bla.com', password='bla', first_name='Cec')
+        room1 = create_room(user)
+        room2 = create_room(user, title="Second room")
+        msg1 = Message.objects.create(text='test message', author=second_user, room=room1)
+        msg2 =  Message.objects.create(text='test message', author=third_user, room=room2)
+        response=self.client.get('/')
+        print response
+        self.assertContains(response, msg1.author.first_name)
+        self.assertContains(response, msg2.author.first_name)
 
 class NewRoomViewTest(TestCase):
 

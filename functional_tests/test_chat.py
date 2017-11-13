@@ -96,20 +96,20 @@ class SimpleChatTest(FunctionalTest):
         self.assertNotIn('Cecilia', body)
 
 
-        self.browser.find_element_by_id('id_title').send_keys('main')
+        self.browser.find_element_by_id('id_title').send_keys('Testroom')
         self.browser.find_element_by_id('id_users_0').click()
         self.browser.find_element_by_id('id_create_room').click()
 
         #It creates the room and and opens it
         title=self.browser.find_element_by_tag_name('title').text
-        self.assertEqual(title, 'main')
+        self.assertEqual(title, 'Testroom')
 
         #Bob sees the room listed, and goes there
         self.browser=bob_browser
         self.browser.get(self.server_url)
-        self.browser.find_element_by_link_text("main").click()
+        self.browser.find_element_by_class_name("room").click()
         title = self.browser.find_element_by_tag_name('title').text
-        self.assertEqual(title, 'main')
+        self.assertEqual(title, 'Testroom')
         #check_for_bad_request(self)
 
         #Alice sees an input field and a send button
@@ -156,7 +156,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser=cecilia_browser
         self.browser.get(self.server_url)
         body=self.browser.find_element_by_tag_name('body').text
-        self.assertNotIn('main', body)
+        self.assertNotIn('Testroom', body)
 
 
         #cleanup
@@ -175,7 +175,7 @@ class SimpleChatTest(FunctionalTest):
 
         #She creates a room and writes some messages to bob
         self.browser.find_element_by_class_name('add-new-room').click()
-        self.browser.find_element_by_id('id_title').send_keys('main')
+        self.browser.find_element_by_id('id_title').send_keys('Testroom')
         self.browser.find_element_by_id('id_users_0').click()
         self.browser.find_element_by_id('id_create_room').click()
         self.browser.find_element_by_id('id_text').send_keys("Hola, Bob!")
@@ -187,10 +187,12 @@ class SimpleChatTest(FunctionalTest):
         #She can click a button and go back to the list of rooms
         self.browser.find_element_by_class_name('back-button').click()
         body=self.browser.find_element_by_tag_name('body').text
-        self.assertIn('main', body)
+        self.assertIn('Testroom', body)
 
         #List of room shows the time of her last message
-        self.fail()
+        room=self.browser.find_element_by_class_name("room").text
+        self.assertIn('Alice', room)
+        self.assertIn('ago', room)
 
         #Then she leaves
         self.browser.find_element_by_link_text('Logout').click()
@@ -201,7 +203,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_password').send_keys('bobpassword')
         self.browser.find_element_by_id('id_login').click()
         #He can see the main room in the main page, he clicks on it
-        self.browser.find_element_by_link_text('main').click()
+        self.browser.find_element_by_class_name('room').click()
 
         #He can see Alice's earlier message
         body=self.browser.find_element_by_tag_name('body').text
