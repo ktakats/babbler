@@ -5,7 +5,7 @@
 {% block content %}
 <form method="get">
     <input type="text" name="email" id="id_email" placeholder="Email"/>
-    <button type="submit" id="id_search">Search</button>
+    <button type="submit" id="id_search" class="btn btn-secondary">Search</button>
 </form>
 
 {% if friend %}
@@ -18,7 +18,7 @@
         <div class="col-md-3 ml-auto">
             <form method="get">
                 <input type="hidden" name="invite" value="{{friend.id}}"/>
-                <button type="submit" id="id_invite">Invite</button>
+                <button type="submit" id="id_invite" class="btn btn-secondary">Invite</button>
             </form>
         </div>
     </div>

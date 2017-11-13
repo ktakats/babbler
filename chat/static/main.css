@@ -1,3 +1,5 @@
+/%Colors: 93B7BE; F1FFFA, D5C7BC, 785964, 454545%/
+
 body {
   font: 13px Helvetica, Arial;
   text-align: center;
@@ -7,7 +9,7 @@ body {
 
 .container {
     max-width: 50em;
-    align: center;
+    text-align: center;
 }
 
 .navbar-custom {
@@ -47,6 +49,19 @@ label {
 .add-new-room{
     float: right;
     margin-right: 25%;
+    cursor: pointer;
+}
+
+#id_new_room_form label {
+    display: inline-block;
+    width: 200px;
+    text-align: left;
+}
+
+.back-button {
+    float: left;
+    margin-left: 25%;
+    color: #93B7BE !important;
 }
 
 .main {
@@ -55,6 +70,7 @@ label {
 
 .room {
     border: solid 1px;
+    border-radius: 15px;
     border-color: #93B7BE !important;
     color: #454545 !important;
     width: 50%;

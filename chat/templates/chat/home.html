@@ -9,8 +9,9 @@
 {% block content %}
 
 {% if user.is_authenticated %}
+
     <div class="new_room_button_div">
-    <a href="{% url 'new_room' %}" class="add-new-room"><button class="btn btn-primary btn-circle"><i class="fa fa-plus"></i></button></a>
+        <a href="{% url 'new_room' %}" class="add-new-room"><button class="btn btn-primary btn-circle"><i class="fa fa-plus"></i></button></a>
     </div>
     <div>
     {% for room in rooms %}

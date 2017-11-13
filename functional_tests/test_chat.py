@@ -50,7 +50,6 @@ class SimpleChatTest(FunctionalTest):
         #Now she's logged in and create rooms
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Hi, Alice', body)
-        self.assertIn('Create', body)
 
 
     def test_room_chat(self):
@@ -91,7 +90,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.get(self.server_url)
 
         #Bob is in the list, but Cecilia is not
-        self.browser.find_element_by_link_text('Create a new room').click()
+        self.browser.find_element_by_class_name('add-new-room').click()
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Bob', body)
         self.assertNotIn('Cecilia', body)
@@ -175,7 +174,7 @@ class SimpleChatTest(FunctionalTest):
         Friend.objects.create(from_user=bob, to_user=alice)
 
         #She creates a room and writes some messages to bob
-        self.browser.find_element_by_link_text('Create a new room').click()
+        self.browser.find_element_by_class_name('add-new-room').click()
         self.browser.find_element_by_id('id_title').send_keys('main')
         self.browser.find_element_by_id('id_users_0').click()
         self.browser.find_element_by_id('id_create_room').click()
@@ -184,6 +183,14 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_text').send_keys("How are you?")
         self.browser.find_element_by_id('id_send').click()
         time.sleep(0.5)
+
+        #She can click a button and go back to the list of rooms
+        self.browser.find_element_by_class_name('back-button').click()
+        body=self.browser.find_element_by_tag_name('body').text
+        self.assertIn('main', body)
+
+        #List of room shows the time of her last message
+        self.fail()
 
         #Then she leaves
         self.browser.find_element_by_link_text('Logout').click()

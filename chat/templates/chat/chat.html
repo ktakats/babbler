@@ -3,6 +3,9 @@
 {% block title %}{{room.title}}{%endblock title %}
 
 {% block content %}
+<div>
+<a href="{% url 'home'%}" class="back-button"><i class="fa fa-arrow-left fa-2x"></i></a>
+</div>
 
 <div class="frame">
     <ul id="messages">

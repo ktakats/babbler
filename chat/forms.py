@@ -8,14 +8,14 @@ User=get_user_model()
 
 class NewRoomForm(forms.models.ModelForm):
 
-    users=forms.ModelMultipleChoiceField(queryset=None, required=False, widget=forms.CheckboxSelectMultiple(), label='')
+    users=forms.ModelMultipleChoiceField(queryset=None, required=False, widget=forms.CheckboxSelectMultiple(), label='Add people')
 
     class Meta:
         model=Room
         fields=['title']
         labels={'title': ''}
         widgets={
-            'title': forms.TextInput(attrs={'placeholder': 'Add a new room'}),
+            'title': forms.TextInput(attrs={'placeholder': 'Name of the new room'}),
         }
 
     def __init__(self, user, *args, **kwargs):
