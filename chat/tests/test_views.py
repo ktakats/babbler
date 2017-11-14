@@ -3,6 +3,9 @@ from chat.models import Room, Message
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from friendship.models import Friend, FriendshipRequest
+from datetime import datetime, timedelta
+from django.utils import timezone
+import mock
 
 User=get_user_model()
 
@@ -95,7 +98,6 @@ class HomeViewTest(TestCase):
         msg1 = Message.objects.create(text='test message', author=second_user, room=room1)
         msg2 =  Message.objects.create(text='test message', author=third_user, room=room2)
         response=self.client.get('/')
-        print response
         self.assertContains(response, msg1.author.first_name)
         self.assertContains(response, msg2.author.first_name)
 
@@ -172,7 +174,46 @@ class ChatRoomViewTest(TestCase):
         msg = Message.objects.create(text='test message', author=user, room=room)
         response = self.client.get('/room/' + room.title + '/')
         self.assertContains(response, user.first_name)
-        self.assertContains(response, msg.pub_date.strftime("%Y"))
+        self.assertContains(response, 'minutes ago')
+
+    def test_message_created_more_than_an_hour_ago_shows_day_and_time(self):
+        user = create_and_log_in_user(self)
+        room = create_room(user)
+
+        testtime = timezone.now() - timedelta(hours=1,minutes=30)
+        # need to use mock, because pub_date has auto_add_now
+        with mock.patch('django.utils.timezone.now') as mock_now:
+            mock_now.return_value = testtime
+            msg = Message.objects.create(text='test message', author=user, room=room)
+        response = self.client.get('/room/' + room.title + '/')
+        self.assertContains(response, user.first_name)
+        self.assertContains(response, msg.pub_date.strftime("%a %H:%M"))
+
+
+    def test_message_created_more_than_a_week_ago_shows_date_and_time(self):
+        user = create_and_log_in_user(self)
+        room = create_room(user)
+        testtime = timezone.now() - timedelta(weeks=1, minutes=30)
+        # need to use mock, because pub_date has auto_add_now
+        with mock.patch('django.utils.timezone.now') as mock_now:
+            mock_now.return_value = testtime
+            msg = Message.objects.create(text='test message', author=user, room=room)
+        response = self.client.get('/room/' + room.title + '/')
+        self.assertContains(response, user.first_name)
+        self.assertContains(response, msg.pub_date.strftime("%b %d %H:%M"))
+
+    def test_message_created_more_than_a_year_ago_shows_year(self):
+        user = create_and_log_in_user(self)
+        room = create_room(user)
+
+        testtime = timezone.now() - timedelta(weeks=53, minutes=30)
+        # need to use mock, because pub_date has auto_add_now
+        with mock.patch('django.utils.timezone.now') as mock_now:
+            mock_now.return_value = testtime
+            msg = Message.objects.create(text='test message', author=user, room=room)
+        response = self.client.get('/room/' + room.title + '/')
+        self.assertContains(response, user.first_name)
+        self.assertContains(response, msg.pub_date.strftime("%b %d %Y %H:%M"))
 
     def test_only_group_members_can_see_view(self):
         user=create_and_log_in_user(self)

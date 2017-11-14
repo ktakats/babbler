@@ -1,0 +1,18 @@
+
+{% load staticfiles %}
+
+{% load timestamp_tags %}
+
+{# if message is less than an hour old shows how many minutes ago #}
+{% if msg.pub_date|hours_ago %}
+    <p><small> {{msg.pub_date|timesince}} ago </small></p>
+{# if message is less than a week old, shows day and time #}
+{% elif msg.pub_date|weeks_ago %}
+    <p><small> {{msg.pub_date|date:"D H:i"}} </small></p>
+{# if message is less than a year old, shows date and time #}
+{% elif msg.pub_date|weeks_ago:52 %}
+     <p><small> {{msg.pub_date|date:"M d H:i"}} </small></p>
+{# if message is more than a year old, shows date, year and time #}
+{% else %}
+    <p><small> {{msg.pub_date|date:"M d o H:i"}} </small></p>
+{% endif %}
