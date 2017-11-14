@@ -70,7 +70,7 @@
     };
 
     socket.onmessage = function(e) {
-        var date=new Date();
+        var date="just now";
         var data=JSON.parse(e.data)
         console.log(data["msg"])
         if(owner){

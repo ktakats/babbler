@@ -18,7 +18,7 @@
         <a href="{{room.get_absolute_url}}"><div class="room">{{room.title}}
             {% with room.message_set.last as msg%}
                 {{msg.author.first_name}}
-                {{msg.pub_date|timesince}} ago
+                {% include "chat/timestamp.html"%}
             {% endwith %}
         </div></a>
     {% endfor %}
