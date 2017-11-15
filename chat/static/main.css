@@ -58,6 +58,8 @@ label {
     text-align: left;
 }
 
+
+
 .back-button {
     float: left;
     margin-left: 25%;
@@ -68,21 +70,44 @@ label {
     padding: 5em;
 }
 
-.room {
-    border: solid 1px;
-    border-radius: 15px;
-    border-color: #93B7BE !important;
-    color: #454545 !important;
+.roomdiv {
+
     width: 50%;
     margin: 0 auto;
     text-align: left;
     padding-left: 5%;
+    padding-right: 5%;
     padding-top: 2%;
     padding-bottom: 2%;
+    border: solid 1px;
+    border-radius: 15px;
+    border-color: #93B7BE !important;
+    color: #454545 !important;
 }
 
-.room a a:hover a:visited{
+.roomdiv a {
+    width: 100%;
+    height: 100%;
+}
+
+.roomdiv a-link {
     text-decoration: none !important;
+    color: #454545 !important;
+}
+
+.roomdiv a {
+    text-decoration: none !important;
+    color: #454545 !important;
+}
+
+.details{
+    float: right;
+    margin-top: -2%;
+    padding-right: 3%;
+}
+
+.details p {
+    margin: 0 auto;
 }
 
 .friend {

@@ -15,12 +15,22 @@
     </div>
     <div>
     {% for room in rooms %}
-        <a href="{{room.get_absolute_url}}"><div class="room">{{room.title}}
-            {% with room.message_set.last as msg%}
-                {{msg.author.first_name}}
-                {% include "chat/timestamp.html"%}
-            {% endwith %}
-        </div></a>
+        <div class="roomdiv">
+            <a href="{{room.get_absolute_url}}">
+                <span>
+                <span class="room">{{room.title}}
+                    {% with room.message_set.last as msg%}
+                </span>
+                    {% if msg %}
+                <span class="details">
+                    <p><small>{{msg.author.first_name}}</small></p>
+                    {% include "chat/timestamp.html"%}
+                </span>
+                    {% endif %}
+                    {% endwith %}
+                </span>
+            </a>
+        </div>
     {% endfor %}
     </div>
 {% else %}
