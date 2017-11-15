@@ -14,7 +14,7 @@ def create_and_log_in_user(self, email='bla@bla.com', password='bla', first_name
     self.client.force_login(user)
     return user
 
-def create_room(user, title='main'):
+def create_room(user, title='NewRoom'):
     group=Group.objects.create(name=title)
     group.user_set.add(user)
     room=Room.objects.create(title=title, group_id=group.id)
@@ -44,9 +44,10 @@ class HomeViewTest(TestCase):
         self.assertContains(response, 'Sign up')
 
     def test_view_doesnot_show_rooms(self):
-        room=Room.objects.create(title="Room1")
+        user=User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test')
+        room=create_room(user)
         response=self.client.get('/')
-        self.assertNotContains(response, 'Room1')
+        self.assertNotContains(response, room.title)
 
     def test_view_doesnot_show_link_to_create_room(self):
         response = self.client.get('/')
@@ -118,7 +119,7 @@ class NewRoomViewTest(TestCase):
         create_and_log_in_user(self)
         response = self.client.post('/new_room/', data={'title': 'Main'})
         room = Room.objects.first()
-        self.assertRedirects(response, '/room/%s/' % room.title)
+        self.assertRedirects(response, '/room/%d/' % room.id)
 
     def test_view_requires_login(self):
         response=self.client.get('/new_room/')
@@ -138,26 +139,26 @@ class ChatRoomViewTest(TestCase):
     def test_view_uses_chat_template(self):
         user=create_and_log_in_user(self)
         room=create_room(user)
-        response = self.client.get('/room/'+room.title+'/')
+        response = self.client.get('/room/'+str(room.id)+'/')
         self.assertTemplateUsed(response, 'chat/chat.html')
 
     def test_view_requires_login(self):
         user = create_and_log_in_user(self)
         room = create_room(user)
         self.client.logout()
-        response = self.client.get('/room/'+room.title+'/')
-        self.assertRedirects(response, '/?next=/room/main/')
+        response = self.client.get('/room/%d/' % room.id)
+        self.assertRedirects(response, '/?next=/room/%d/' % room.id)
 
     def test_view_renders_message_form(self):
         user = create_and_log_in_user(self)
         room = create_room(user)
-        response = self.client.get('/room/' + room.title + '/')
+        response = self.client.get('/room/' + str(room.id) + '/')
         self.assertContains(response, 'id_text')
 
     def test_submitting_form_creates_new_message(self):
         user = create_and_log_in_user(self)
         room = create_room(user)
-        self.client.post('/room/' + room.title + '/', data={'text': 'test', 'author': user})
+        self.client.post('/room/' + str(room.id) + '/', data={'text': 'test', 'author': user})
         msg=Message.objects.first()
         self.assertEqual(msg.text, 'test')
 
@@ -165,14 +166,14 @@ class ChatRoomViewTest(TestCase):
         user = create_and_log_in_user(self)
         room = create_room(user)
         msg=Message.objects.create(text='test message', author=user, room=room)
-        response=self.client.get('/room/'+room.title+'/')
+        response=self.client.get('/room/'+str(room.id)+'/')
         self.assertContains(response, 'test message')
 
     def test_messages_show_author_and_time(self):
         user = create_and_log_in_user(self)
         room = create_room(user)
         msg = Message.objects.create(text='test message', author=user, room=room)
-        response = self.client.get('/room/' + room.title + '/')
+        response = self.client.get('/room/%d/' % room.id)
         self.assertContains(response, user.first_name)
         self.assertContains(response, 'minutes ago')
 
@@ -185,7 +186,7 @@ class ChatRoomViewTest(TestCase):
         with mock.patch('django.utils.timezone.now') as mock_now:
             mock_now.return_value = testtime
             msg = Message.objects.create(text='test message', author=user, room=room)
-        response = self.client.get('/room/' + room.title + '/')
+        response = self.client.get('/room/%d/' % room.id)
         self.assertContains(response, user.first_name)
         self.assertContains(response, msg.pub_date.strftime("%a %H:%M"))
 
@@ -198,7 +199,7 @@ class ChatRoomViewTest(TestCase):
         with mock.patch('django.utils.timezone.now') as mock_now:
             mock_now.return_value = testtime
             msg = Message.objects.create(text='test message', author=user, room=room)
-        response = self.client.get('/room/' + room.title + '/')
+        response = self.client.get('/room/%d/' % room.id)
         self.assertContains(response, user.first_name)
         self.assertContains(response, msg.pub_date.strftime("%b %d %H:%M"))
 
@@ -211,7 +212,7 @@ class ChatRoomViewTest(TestCase):
         with mock.patch('django.utils.timezone.now') as mock_now:
             mock_now.return_value = testtime
             msg = Message.objects.create(text='test message', author=user, room=room)
-        response = self.client.get('/room/' + room.title + '/')
+        response = self.client.get('/room/%d/' % room.id)
         self.assertContains(response, user.first_name)
         self.assertContains(response, msg.pub_date.strftime("%b %d %Y %H:%M"))
 
@@ -223,7 +224,7 @@ class ChatRoomViewTest(TestCase):
         room=Room.objects.create(title='test', group_id=group.id)
         group.user_set.add(second_user)
         group.user_set.add(third_user)
-        response=self.client.get('/room/test/')
+        response=self.client.get('/room/%d/' % room.id)
         self.assertRedirects(response, '/')
 
 class FindFriendsViewTest(TestCase):

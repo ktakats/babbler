@@ -13,7 +13,6 @@ def ws_add(message, room):
 @channel_session
 @channel_session_user
 def ws_message(message):
-    print message.channel_session.keys()
     room = message.channel_session['room']
     Group('chat-%s' %  (room)).send({
         "text": json.dumps({'msg': message.content['text'], 'author': message.user.first_name})

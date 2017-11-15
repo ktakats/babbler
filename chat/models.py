@@ -19,7 +19,7 @@ class Room(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('room', args=[self.title])
+        return reverse('room', args=[self.id])
 
 class MyUserManager(BaseUserManager):
 

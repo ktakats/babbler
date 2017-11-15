@@ -96,7 +96,7 @@ def log_out(request):
 @login_required(login_url='/')
 def chat(request, room_id):
     try:
-        room=Room.objects.get(title=room_id)
+        room=Room.objects.get(id=room_id)
     except ObjectDoesNotExist:
         return redirect('/')
     user = request.user
