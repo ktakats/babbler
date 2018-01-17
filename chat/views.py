@@ -9,14 +9,13 @@ from chat.models import Message, Room
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 from django.forms import ValidationError
 from friendship.models import Friend, FriendshipRequest
 
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-User=get_user_model()
+User = get_user_model()
 
 # Create your views here.
 def home(request):
@@ -95,16 +94,26 @@ def pm(request):
     pms=Friend.objects.unread_requests(user=request.user)
     return render(request, 'chat/messages.html', {'pms': pms})
 
-def signup(request):
-    if request.method=='POST':
-        form=SignupForm(request.POST)
-        if form.is_valid():
-            user=form.save()
-            login(request, user)
-            return redirect('/')
-    else:
-        form=SignupForm()
-    return render(request, 'chat/signup.html', {'form': form})
+class SignupView(FormView):
+    template_name = 'chat/signup.html'
+    form_class = SignupForm
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('/')
+
+
+# def signup(request):
+#     if request.method=='POST':
+#         form=SignupForm(request.POST)
+#         if form.is_valid():
+#             user=form.save()
+#             login(request, user)
+#             return redirect('/')
+#     else:
+#         form=SignupForm()
+#     return render(request, 'chat/signup.html', {'form': form})
 
 def log_out(request):
     logout(request)

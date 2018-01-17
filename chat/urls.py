@@ -1,11 +1,12 @@
 from django.conf.urls import url, include
 from . import views
-from .views import NewRoomView
+from .views import NewRoomView, SignupView
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^accounts/logout/', views.log_out, name='logout'),
-    url(r'^accounts/signup/$', views.signup, name='signup'),
+    #url(r'^accounts/signup/$', views.signup, name='signup'),
+    url(r'^accounts/signup/$', SignupView.as_view(), name='signup'),
     url(r'^room/(?P<room_id>.*)/$', views.chat, name='room'),
     #url(r'^new_room/$', views.new_room, name='new_room'),
     url(r'^new_room/$', NewRoomView.as_view(), name='new_room'),
