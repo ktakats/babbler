@@ -13,6 +13,9 @@ from django.contrib.auth.models import Group
 from django.forms import ValidationError
 from friendship.models import Friend, FriendshipRequest
 
+from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 User=get_user_model()
 
 # Create your views here.
@@ -36,15 +39,29 @@ def home(request):
         pms=len(pms)
         return render(request, 'chat/home.html', {'rooms': rooms, 'pms': pms})
 
-@login_required(login_url='/')
-def new_room(request):
-    if request.method=='POST':
-        form=NewRoomForm(request.user, request.POST)
-        if form.is_valid():
-            room=form.save()
-            return redirect(room.get_absolute_url())
-    form=NewRoomForm(request.user)
-    return render(request, 'chat/new_room.html', {'form': form})
+class NewRoomView(LoginRequiredMixin, FormView):
+    template_name = 'chat/new_room.html'
+    form_class = NewRoomForm
+
+    def get_form_kwargs(self):
+        request = self.request
+        kwargs = super(NewRoomView, self).get_form_kwargs()
+        kwargs['user'] = request.user
+        return kwargs
+
+    def form_valid(self, form):
+        room = form.save()
+        return redirect(room.get_absolute_url())
+
+# @login_required(login_url='/')
+# def new_room(request):
+#     if request.method=='POST':
+#         form=NewRoomForm(request.user, request.POST)
+#         if form.is_valid():
+#             room=form.save()
+#             return redirect(room.get_absolute_url())
+#     form=NewRoomForm(request.user)
+#     return render(request, 'chat/new_room.html', {'form': form})
 
 @login_required(login_url='/')
 def find_friends(request):

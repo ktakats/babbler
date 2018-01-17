@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost',]
 
+LOGIN_URL = '/'
 
 # Application definition
 
