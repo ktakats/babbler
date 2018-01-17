@@ -52,15 +52,6 @@ class NewRoomView(LoginRequiredMixin, FormView):
         room = form.save()
         return redirect(room.get_absolute_url())
 
-# @login_required(login_url='/')
-# def new_room(request):
-#     if request.method=='POST':
-#         form=NewRoomForm(request.user, request.POST)
-#         if form.is_valid():
-#             room=form.save()
-#             return redirect(room.get_absolute_url())
-#     form=NewRoomForm(request.user)
-#     return render(request, 'chat/new_room.html', {'form': form})
 
 @login_required(login_url='/')
 def find_friends(request):
@@ -103,21 +94,6 @@ class SignupView(FormView):
         login(self.request, user)
         return redirect('/')
 
-
-# def signup(request):
-#     if request.method=='POST':
-#         form=SignupForm(request.POST)
-#         if form.is_valid():
-#             user=form.save()
-#             login(request, user)
-#             return redirect('/')
-#     else:
-#         form=SignupForm()
-#     return render(request, 'chat/signup.html', {'form': form})
-
-def log_out(request):
-    logout(request)
-    return redirect('/')
 
 @login_required(login_url='/')
 def chat(request, room_id):

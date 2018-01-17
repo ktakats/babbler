@@ -29,6 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost',]
 
 LOGIN_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Application definition
 
