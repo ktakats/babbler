@@ -13,7 +13,7 @@ from django.forms import ValidationError
 from friendship.models import Friend, FriendshipRequest
 
 from django.views.generic.edit import FormView
-from django.views.generic import TemplateView, View, ListView
+from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 User = get_user_model()
@@ -118,5 +118,6 @@ def chat(request, room_id):
         if form.is_valid():
             msg=form.save(author=user, room=room)
     form=MsgForm()
+    all_rooms = Room.objects.filter(group__in=request.user.groups.all())
     messages=Message.objects.filter(room=room).order_by('pub_date')
-    return render(request, 'chat/chat.html', {'room': room, 'form': form, 'messages': messages})
+    return render(request, 'chat/chat.html', {'room': room, 'all_rooms':all_rooms, 'form': form, 'messages': messages})

@@ -148,7 +148,8 @@ class SimpleChatTest(FunctionalTest):
         time.sleep(0.5)
 
         #She can click a button and go back to the list of rooms
-        self.browser.find_element_by_class_name('back-button').click()
+        #self.browser.find_element_by_class_name('back-button').click()
+        self.browser.get(self.server_url)
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Testroom', body)
 
@@ -174,6 +175,42 @@ class SimpleChatTest(FunctionalTest):
         self.assertIn("How are you?", body)
         self.assertIn("Alice", body)
 
+
+    def test_can_switch_rooms_from_chat_view(self):
+        # Alice goes to the chat app
+        alice = self.go_to_page_and_log_in('alice@example.com', password='alicepassword', first_name='Alice')
+        alice_browser = self.browser
+        self.browser = webdriver.Firefox()
+        bob=self.go_to_page_and_log_in('bob@example.com', password='bobpassword', first_name='Bob')
+        bob_browser = self.browser
+
+        Friend.objects.create(from_user=bob, to_user=alice)
+        Friend.objects.create(from_user=alice, to_user=bob)
+
+        # She creates a room and writes some messages to bob
+        self.browser=alice_browser
+        self.browser.find_element_by_class_name('add-new-room').click()
+        add_new_room(self.browser, 'Testroom', add_user=True)
+        self.browser.find_element_by_id('id_text').send_keys("Hi, Bob!")
+        self.browser.find_element_by_id('id_send').click()
+
+
+        #Bob also creates a room, adds alice and writes to her
+        self.browser=bob_browser
+        self.browser.get(self.server_url)
+        self.browser.find_element_by_class_name('add-new-room').click()
+        add_new_room(self.browser, 'Second room', add_user=True)
+        self.browser.find_element_by_id('id_text').send_keys("Hola, Alice!")
+        self.browser.find_element_by_id('id_send').click()
+
+        #Bob sees that there's another room
+        self.browser.find_element_by_link_text("Testroom").click()
+        body = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('Hi, Bob!', body)
+
+        # cleanup
+        self.addCleanup(lambda: quit_if_possible(alice_browser))
+        self.addCleanup(lambda: quit_if_possible(bob_browser))
 
 class MakeFriends(FunctionalTest):
 

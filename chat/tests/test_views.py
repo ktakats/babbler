@@ -227,6 +227,17 @@ class ChatRoomViewTest(TestCase):
         response=self.client.get('/room/%d/' % room.id)
         self.assertRedirects(response, '/')
 
+    def test_view_lists_all_the_rooms_of_user(self):
+        user = create_and_log_in_user(self)
+        second_user = User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        room1 = create_room(user, "Room1")
+        room2 = create_room(user, "TestRoom")
+        room3 = create_room(second_user, "Third room")
+        response = self.client.get('/room/%d/' % room1.id)
+        self.assertContains(response, room2.title)
+        self.assertNotContains(response, room3.title)
+
+
 class FindFriendsViewTest(TestCase):
 
     def test_view_uses_findfriends_template(self):

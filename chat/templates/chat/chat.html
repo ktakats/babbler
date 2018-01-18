@@ -5,10 +5,21 @@
 {% block content %}
 {% load staticfiles %}
 
-
+<!--
 <div>
 <a href="{% url 'home'%}" class="back-button"><i class="fa fa-arrow-left fa-2x"></i></a>
-</div>
+</div>-->
+<div class="row">
+
+    <nav class="col-md-2 bg-light sidebar">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+                {% for room in all_rooms %}
+                <li class="nav-item"><a href="{{room.get_absolute_url}}">{{room.title}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
 
 <div class="frame">
     <ul id="messages">
@@ -52,6 +63,8 @@
         </div>
     </form>
 </div>
+</div>
+
 </div>
 
 
