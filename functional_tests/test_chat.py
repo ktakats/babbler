@@ -46,7 +46,6 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_email').send_keys('alice@bla.com')
         self.browser.find_element_by_id('id_password').send_keys('blabla')
         self.browser.find_element_by_id('id_login').click()
-
         #Now she's logged in and create rooms
         body=self.browser.find_element_by_tag_name('body').text
         self.assertIn('Hi, Alice', body)
@@ -190,7 +189,7 @@ class SimpleChatTest(FunctionalTest):
         self.assertIn('Testroom', body)
 
         #List of room shows the time of her last message
-        room=self.browser.find_element_by_class_name("room").text
+        room=self.browser.find_element_by_class_name("details").text
         self.assertIn('Alice', room)
         self.assertIn('ago', room)
 
