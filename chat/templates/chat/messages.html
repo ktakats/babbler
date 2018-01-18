@@ -2,18 +2,18 @@
 
 {% block content %}
 
-{% for pm in pms %}
+{% for pm in object_list %}
     <div class="pms">
         <div class="row">
             <div class="col-md-3">
                 {{pm.message}}
             </div>
             <div class="col-md-3 ml-auto">
-                <form method="get">
+                <form method="post">{% csrf_token %}
                     <input type="hidden" name="accept" value="{{pm.pk}}"/>
                     <button type="submit" id="id_accept">Accept</button>
                 </form>
-                <form method="get">
+                <form method="post">{% csrf_token %}
                     <input type="hidden" name="decline" value="{{pm.pk}}">
                     <button type="submit" id="id_decline">Decline</button>
                 </form>

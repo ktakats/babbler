@@ -295,7 +295,7 @@ class MessagesViewTest(TestCase):
         Friend.objects.add_friend(second_user, user, message=second_user.first_name + ' wants to connect')
         Friend.objects.add_friend(third_user, user, message=third_user.first_name + ' wants to connect')
         f=FriendshipRequest.objects.get(from_user_id=second_user.id)
-        response=self.client.get('/pm/', data={'accept': f.id})
+        response=self.client.post('/pm/', data={'accept': f.id})
         self.assertEquals(Friend.objects.count(), 2)
         self.assertNotContains(response, second_user.first_name)
 
@@ -306,7 +306,7 @@ class MessagesViewTest(TestCase):
         Friend.objects.add_friend(second_user, user, message=second_user.first_name + ' wants to connect')
         Friend.objects.add_friend(third_user, user, message=third_user.first_name + ' wants to connect')
         f = FriendshipRequest.objects.get(from_user_id=second_user.id)
-        response = self.client.get('/pm/', data={'decline': f.id})
+        response = self.client.post('/pm/', data={'decline': f.id})
         self.assertEquals(Friend.objects.count(), 0)
         self.assertNotContains(response, second_user.first_name)
 

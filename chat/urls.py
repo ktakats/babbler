@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 from . import views
-from .views import NewRoomView, SignupView
+from .views import NewRoomView, SignupView, PMView
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -13,5 +13,6 @@ urlpatterns = [
     #url(r'^new_room/$', views.new_room, name='new_room'),
     url(r'^new_room/$', NewRoomView.as_view(), name='new_room'),
     url(r'^find_friends/$', views.find_friends, name='find_friends'),
-    url(r'^pm/$', views.pm, name='pm'),
+    #url(r'^pm/$', views.pm, name='pm'),
+    url(r'^pm/$', PMView.as_view(), name='pm'),
 ]

@@ -13,6 +13,7 @@ from django.forms import ValidationError
 from friendship.models import Friend, FriendshipRequest
 
 from django.views.generic.edit import FormView
+from django.views.generic import TemplateView, View, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 User = get_user_model()
@@ -73,17 +74,23 @@ def find_friends(request):
         messages.success(request, 'Invite sent to ' + invitee.first_name + '!')
     return render(request, 'chat/find_friends.html', {'friend': user})
 
-@login_required(login_url='/')
-def pm(request):
-    if 'accept' in request.GET:
-        f=FriendshipRequest.objects.get(pk=request.GET['accept'])
-        f.accept()
-    if 'decline' in request.GET:
-        f = FriendshipRequest.objects.get(pk=request.GET['decline'])
-        f.reject()
-        f.delete()
-    pms=Friend.objects.unread_requests(user=request.user)
-    return render(request, 'chat/messages.html', {'pms': pms})
+class PMView(LoginRequiredMixin, ListView):
+    template_name = 'chat/messages.html'
+
+    def get_queryset(self):
+        return Friend.objects.unread_requests(user=self.request.user)
+
+
+    def post(self, request, *args, **kwargs):
+        if 'accept' in request.POST:
+            f = FriendshipRequest.objects.get(pk=request.POST.get('accept'))
+            f.accept()
+        if 'decline' in request.POST:
+            f = FriendshipRequest.objects.get(pk=request.POST.get('decline'))
+            f.reject()
+            f.delete()
+        return render(request, 'chat/messages.html')
+
 
 class SignupView(FormView):
     template_name = 'chat/signup.html'
