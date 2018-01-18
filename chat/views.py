@@ -59,15 +59,15 @@ def find_friends(request):
     user=None
     if 'email' in request.GET:
         try:
-            validate_email(request.GET['email'])
+            validate_email(request.GET.get('email'))
         except ValidationError:
             messages.error(request, 'Not a valid email')
         try:
-            user=User.objects.get(email=request.GET['email'])
+            user=User.objects.get(email=request.GET.get('email'))
         except ObjectDoesNotExist:
             messages.error(request, 'No result')
     if 'invite' in request.GET:
-        invitee=User.objects.get(id=request.GET['invite'])
+        invitee=User.objects.get(id=request.GET.get('invite'))
         msg=request.user.first_name + '(' + request.user.email + ') would like to connect with you.'
         Friend.objects.add_friend(request.user, invitee, message=msg)
         user=None
