@@ -2,6 +2,7 @@ from django.test import TestCase
 from chat.models import Room, Message
 from django.contrib import auth
 from django.contrib.auth.models import Group
+import time
 
 User=auth.get_user_model()
 
@@ -24,6 +25,23 @@ class RoomModelTest(TestCase):
     def test_room_has_absolute_url(self):
         room = create_room()
         self.assertEqual(room.get_absolute_url(), '/room/%d/' % (room.id))
+
+    def test_filtering_by_user_group(self):
+        user = User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test')
+        room = create_room()
+        group = Group.objects.first()
+        group.user_set.add(user)
+        filtered = Room.objects.get_group_rooms(user)
+        self.assertEquals(room, filtered.first())
+
+    def test_last_msg_date_updated_with_new_msg(self):
+        user = User.objects.create_user(email='bla@bla.com', password='bla', first_name='Test')
+        room = create_room()
+        msg1 = Message.objects.create(text="First message", author=user, room=room)
+        self.assertEquals(room.last_msg_date, msg1.pub_date)
+        time.sleep(10)
+        msg2 = Message.objects.create(text="Second message", author=user, room=room)
+        self.assertEquals(room.last_msg_date, msg2.pub_date)
 
 
 

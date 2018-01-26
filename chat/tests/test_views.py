@@ -253,6 +253,29 @@ class ChatRoomViewTest(TestCase):
         response = self.client.get('/room/%d/' % room1.id)
         self.assertNotIn(room1, response.context['all_rooms'])
 
+    def test_list_ordered_by_last_msg_date(self):
+        user = create_and_log_in_user(self)
+        second_user = User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        group = Group.objects.create(name='test')
+        room1 = Room.objects.create(title='Room1', group=group)
+        room2 = Room.objects.create(title='TestRoom', group=group)
+        room3 = Room.objects.create(title='Third room', group=group)
+        group.user_set.add(user)
+        group.user_set.add(second_user)
+
+        testtime1 = timezone.now() - timedelta(hours=1, minutes=20)
+        testtime2 = timezone.now() - timedelta(hours=1, minutes=30)
+        # need to use mock, because pub_date has auto_add_now
+        with mock.patch('django.utils.timezone.now') as mock_now:
+            mock_now.return_value = testtime1
+            msg1 = Message.objects.create(text='test message 1', author=user, room=room2)
+            mock_now.return_value = testtime2
+            msg2 = Message.objects.create(text='test message 2', author=user, room=room3)
+
+        response = self.client.get('/room/%d/' % room1.id)
+        self.assertEquals(response.context['all_rooms'][0], room2)
+
+
 
 class FindFriendsViewTest(TestCase):
 

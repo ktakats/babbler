@@ -34,7 +34,7 @@ def home(request):
         return render(request, 'chat/home.html', {'form': form})
     else:
         #find roooms with user in them
-        rooms=Room.objects.filter(group__in=request.user.groups.all())
+        rooms=Room.objects.get_group_rooms(request.user)
         pms = Friend.objects.unread_requests(user=request.user)
         pms=len(pms)
         return render(request, 'chat/home.html', {'rooms': rooms, 'pms': pms})
@@ -118,6 +118,6 @@ def chat(request, room_id):
         if form.is_valid():
             msg=form.save(author=user, room=room)
     form=MsgForm()
-    all_rooms = Room.objects.filter(group__in=request.user.groups.all()).exclude(id=room_id)
+    all_rooms = Room.objects.get_group_rooms(user).exclude(id=room_id)
     messages=Message.objects.filter(room=room).order_by('pub_date')
     return render(request, 'chat/chat.html', {'room': room, 'all_rooms':all_rooms, 'form': form, 'messages': messages})

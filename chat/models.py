@@ -6,20 +6,26 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.conf import settings
 from django.contrib.auth.models import Group
-
+from django.db.models.signals import post_save
 # Create your models here.
+
+class RoomManager(models.Manager):
+    def get_group_rooms(self, user):
+        return self.get_queryset().filter(group__in=user.groups.all()).order_by("-last_msg_date")
 
 class Room(models.Model):
 
     title=models.CharField(max_length=200)
-    #group_id=models.IntegerField(blank=True, null=True)
     group=models.ForeignKey(Group)
+    last_msg_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
         return reverse('room', args=[self.id])
+
+    objects = RoomManager()
 
 class MyUserManager(BaseUserManager):
 
@@ -88,3 +94,12 @@ class Message(models.Model):
 
     def __str__(self):
         return self.text[:10]
+
+def msg_post_save_receiver(sender, instance, created, *args, **kwargs):
+    if created:
+        msg=instance
+        room=msg.room
+        room.last_msg_date=msg.pub_date
+        room.save()
+
+post_save.connect(msg_post_save_receiver, sender=Message)
