@@ -1,7 +1,7 @@
 {% extends 'chat/base.html' %}
 
 {% block content %}
-<form method="POST" action="" id="id_new_room_form">
+<form method="POST" action="" id="id_new_room_form" class="form-group">
 {% csrf_token%}
 {{form.as_p}}
         <button type="submit" id="id_create_room" class="btn btn-secondary">Create</button>

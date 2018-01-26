@@ -17,7 +17,7 @@
         <div class="sidebar-sticky">
             <div class="flex-column sidebardiv">
                 {% for room in all_rooms %}
-                <a href="{{room.get_absolute_url}}" style="text-decoration: none;">
+                <a href="{{room.get_absolute_url}}" id="id_{{room.title}}" style="text-decoration: none;">
                     <div class="text-left py-2">{{room.title}}</div>
                     {% with room.message_set.last as msg%}
                     {% if msg %}

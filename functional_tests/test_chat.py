@@ -72,7 +72,7 @@ class SimpleChatTest(FunctionalTest):
         #Bob sees the room listed, and goes there
         self.browser=bob_browser
         self.browser.get(self.server_url)
-        self.browser.find_element_by_class_name("room").click()
+        self.browser.find_element_by_class_name("roomdiv").click()
         title = self.browser.find_element_by_tag_name('title').text
         self.assertEqual(title, 'Testroom')
         #check_for_bad_request(self)
@@ -167,7 +167,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_password').send_keys('bobpassword')
         self.browser.find_element_by_id('id_login').click()
         #He can see the main room in the main page, he clicks on it
-        self.browser.find_element_by_class_name('room').click()
+        self.browser.find_element_by_class_name('roomdiv').click()
 
         #He can see Alice's earlier message
         body=self.browser.find_element_by_tag_name('body').text
@@ -204,7 +204,7 @@ class SimpleChatTest(FunctionalTest):
         self.browser.find_element_by_id('id_send').click()
 
         #Bob sees that there's another room
-        self.browser.find_element_by_link_text("Testroom").click()
+        self.browser.find_element_by_id("id_Testroom").click()
         body = self.browser.find_element_by_tag_name('body').text
         self.assertIn('Hi, Bob!', body)
 

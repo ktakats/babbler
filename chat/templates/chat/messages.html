@@ -9,16 +9,17 @@
                 {{pm.message}}
             </div>
             <div class="col-md-3 ml-auto">
-                <form method="post">{% csrf_token %}
+                <form method="post" class="m-2">{% csrf_token %}
                     <input type="hidden" name="accept" value="{{pm.pk}}"/>
-                    <button type="submit" id="id_accept">Accept</button>
+                    <button class="btn btn-success" type="submit" id="id_accept">Accept</button>
                 </form>
-                <form method="post">{% csrf_token %}
+                <form method="post" class="m-2">{% csrf_token %}
                     <input type="hidden" name="decline" value="{{pm.pk}}">
-                    <button type="submit" id="id_decline">Decline</button>
+                    <button class="btn btn-danger" type="submit" id="id_decline">Decline</button>
                 </form>
             </div>
         </div>
+        <hr/>
     </div>
 {% empty %}
     <div class="row">
