@@ -230,12 +230,18 @@ class ChatRoomViewTest(TestCase):
     def test_view_lists_all_the_rooms_of_user(self):
         user = create_and_log_in_user(self)
         second_user = User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
-        room1 = create_room(user, "Room1")
-        room2 = create_room(user, "TestRoom")
+        group = Group.objects.create(name='test')
+        room1 = Room.objects.create(title='Room1', group=group)
+        room2 = Room.objects.create(title='TestRoom', group=group)
         room3 = create_room(second_user, "Third room")
+        group.user_set.add(user)
+        group.user_set.add(second_user)
+        msg = Message.objects.create(text="Blablalba bla", author=second_user, room=room2)
         response = self.client.get('/room/%d/' % room1.id)
         self.assertContains(response, room2.title)
         self.assertNotContains(response, room3.title)
+        self.assertContains(response, msg.author)
+
 
 
 class FindFriendsViewTest(TestCase):

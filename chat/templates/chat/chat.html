@@ -13,11 +13,26 @@
 
     <nav class="col-md-2 bg-light sidebar">
         <div class="sidebar-sticky">
-            <ul class="nav flex-column">
+            <div class="nav flex-column">
                 {% for room in all_rooms %}
-                <li class="nav-item"><a href="{{room.get_absolute_url}}">{{room.title}}</a></li>
+
+                <p class="nav-item text-left"><a href="{{room.get_absolute_url}}">{{room.title}}</a></p>
+                {% with room.message_set.last as msg%}
+                {% if msg %}
+                    <div class="d-flex justify-content-between text-muted">
+                        <div>
+                          {{msg.author}}
+                        </div>
+                        <div>
+                          {% include "chat/timestamp.html"%}
+                        </div>
+                      </div>
+                {% endif %}
+                {% endwith%}
+                <hr/>
                 {% endfor %}
-            </ul>
+
+            </div>
         </div>
     </nav>
 
