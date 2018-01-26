@@ -17,23 +17,30 @@
     {% for room in rooms %}
         <div class="roomdiv">
             <a href="{{room.get_absolute_url}}">
-                <span>
-                <span class="room">{{room.title}}
+                <div class="text-left py-3">
+                    {{room.title}}
+                </div>
+
+                <div class="d-flex justify-content-between text-center">
                     {% with room.message_set.last as msg%}
-                </span>
-                    {% if msg %}
-                <span class="details">
-                    <p><small>{{msg.author.first_name}}</small></p>
-                    {% include "chat/timestamp.html"%}
-                </span>
+                        {% if msg %}
+                    <div>
+                        <small>{{msg.author}}</small>
+                    </div>
+                    <div>
+                        {% include "chat/timestamp.html"%}
+                    </div>
                     {% endif %}
-                    {% endwith %}
-                </span>
+                        {% endwith %}
+                </div>
+
             </a>
         </div>
     {% endfor %}
     </div>
+
 {% else %}
+
     <form method="POST" id="id_login_form">
         {% csrf_token %}
         {{form.as_p}}
