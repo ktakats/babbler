@@ -11,7 +11,9 @@
 </div>-->
 <div class="row">
 
-    <nav class="col-md-2 bg-light sidebar">
+    <!-- sidbar with list of rooms-->
+
+    <nav class="col-md-3 col-xs-1 bg-light sidebar">
         <div class="sidebar-sticky">
             <div class="flex-column sidebardiv">
                 {% for room in all_rooms %}
@@ -37,15 +39,17 @@
         </div>
     </nav>
 
-<div class="frame">
+    <!-- Main chat div -->
+
+<div class="frame bg-light">
     <ul id="messages">
     {% for msg in messages %}
 
-            {% if msg.author == user%}
+            {% if msg.author != user%}
             <li style="width:100%">
                 <div class="msj macro">
                    <div class="avatar"><!--<img class="img-circle" style="width:100%;" src="'+ me.avatar +'" />--><p><small>{{msg.author.first_name}}</small></p></div>
-                        <div class="text text-l">
+                        <div class="text text-left text-l">
                                 <p>{{msg.text}}</p>
                                {% include "chat/timestamp.html" with msg=msg %}
                         </div>
@@ -56,11 +60,11 @@
             <li style="width:100%">
                 <div class="msj-rta macro">
 
-                        <div class="text text-r">
+                        <div class="text text-left">
                                 <p>{{msg.text}}</p>
                                 {% include 'chat/timestamp.html' with msg=msg%}
                         </div>
-                    <div class="avatar"><!--<img class="img-circle" style="width:100%;" src="'+ me.avatar +'" />--><p><small>{{msg.author.first_name}}</small></p></div>
+                   <!-- <div class="avatar"><!--<img class="img-circle" style="width:100%;" src="'+ me.avatar +'" />--><!--<p><small>{{msg.author.first_name}}</small></p></div>-->
                 </div>
             </li>
             {% endif %}
@@ -103,11 +107,11 @@
         var data=JSON.parse(e.data)
         console.log(data["msg"])
         if(owner){
-            var message=$("<li style='width:100%'><div class='msj macro'><div class='avatar'>              <p><small>" + data['author'] +"</small></p></div><div class='text text-l'><p>" + data['msg'] +"</p> <p><small>"+ date +"</small></p></div></div></li>");
+            var message=$("<li style='width:100%'><div class='msj-rta macro'><div class='text text-left'><p>" + data['msg'] +"</p> <p><small>"+ date +"</small></p></div></div></li>");
             owner=false;
             }
          else{
-            var message=$("<li style='width:100%'><div class='msj-rta macro'><div class='text text-r'><p>" + data['msg'] +"</p> <p><small>"+ date +"</small></p></div><div class='avatar'><p><small>" + data['author'] +"</small></p></div></div></li>");
+            var message=$("<li style='width:100%'><div class='msj macro'><div class='text text-right'><p>" + data['msg'] +"</p> <p><small>"+ date +"</small></p></div><div class='avatar'><p><small>" + data['author'] +"</small></p></div></div></li>");
 
          }
         $('#messages').append(message);
