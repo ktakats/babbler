@@ -242,6 +242,16 @@ class ChatRoomViewTest(TestCase):
         self.assertNotContains(response, room3.title)
         self.assertContains(response, msg.author)
 
+    def test_view_does_not_list_current_room(self):
+        user = create_and_log_in_user(self)
+        second_user = User.objects.create_user(email='bla2@bla.com', password='blabla', first_name='Bla')
+        group = Group.objects.create(name='test')
+        room1 = Room.objects.create(title='Room1', group=group)
+        room2 = Room.objects.create(title='TestRoom', group=group)
+        group.user_set.add(user)
+        group.user_set.add(second_user)
+        response = self.client.get('/room/%d/' % room1.id)
+        self.assertNotIn(room1, response.context['all_rooms'])
 
 
 class FindFriendsViewTest(TestCase):

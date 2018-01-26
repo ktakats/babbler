@@ -118,6 +118,6 @@ def chat(request, room_id):
         if form.is_valid():
             msg=form.save(author=user, room=room)
     form=MsgForm()
-    all_rooms = Room.objects.filter(group__in=request.user.groups.all())
+    all_rooms = Room.objects.filter(group__in=request.user.groups.all()).exclude(id=room_id)
     messages=Message.objects.filter(room=room).order_by('pub_date')
     return render(request, 'chat/chat.html', {'room': room, 'all_rooms':all_rooms, 'form': form, 'messages': messages})
