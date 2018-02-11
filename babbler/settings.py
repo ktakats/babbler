@@ -24,7 +24,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if config('DJANGO_PRODUCTION')=='True':
+    DEBUG = True
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
@@ -106,8 +109,9 @@ DATABASES = {
     }
 }
 
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+if config('DJANGO_PRODUCTION')=='True':
+    import dj_database_url
+    DATABASES['default'] =  dj_database_url.config()
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
