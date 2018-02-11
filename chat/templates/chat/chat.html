@@ -95,7 +95,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
 <script>
     var room=window.location.pathname.slice(6).slice(0,-1);
-    var socket = new WebSocket('wss://' + window.location.host + '/chat/' + room);
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    var socket = new WebSocket(ws_scheme + '://' + window.location.host + '/chat/' + room);
     var owner=false;
 
     socket.onopen = function open() {
