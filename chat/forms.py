@@ -15,7 +15,7 @@ class NewRoomForm(forms.models.ModelForm):
         fields=['title']
         labels={'title': ''}
         widgets={
-            'title': forms.TextInput(attrs={'placeholder': 'Name of the new room'}),
+            'title': forms.TextInput(attrs={'placeholder': 'Name of the new room', 'autocomplete': 'off'}),
         }
 
     def __init__(self, user, *args, **kwargs):
@@ -54,6 +54,9 @@ class SignupForm(forms.models.ModelForm):
     class Meta:
         model=User
         fields=('email', 'first_name')
+        widgets={
+            'email': forms.EmailInput(attrs={'autocomplete': 'off'})
+        }
 
     def clean(self):
         cleaned_data=super(SignupForm, self).clean()
@@ -76,7 +79,8 @@ class LoginForm(forms.models.ModelForm):
         model=User
         fields=('email', 'password')
         widgets={
-            'password': forms.PasswordInput()
+            'password': forms.PasswordInput(),
+            'email': forms.EmailInput(attrs={'autocomplete': 'off'})
         }
 
     def clean(self):
